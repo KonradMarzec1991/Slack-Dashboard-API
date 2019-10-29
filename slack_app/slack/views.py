@@ -14,21 +14,6 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
-def testview(request):
-    if request.method == "POST":
-        print(request.POST)
-        token = 'xoxb-676821839270-682460664294-42dMAoDFZvIIshCPkJjeWrCg'
-        channel_id = request.POST.get('channel_id')
-        data = {
-            'token': token,
-            'channel_id': channel_id
-        }
-        resp = requests.post('https://slack.com/api/conversations.info', data=data)
-        print(resp.content)
-        return HttpResponse('aaaa')
-
-
-@csrf_exempt
 def display_dialog(request):
 
     request_data = request.POST

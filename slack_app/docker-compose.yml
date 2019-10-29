@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  api:
+    build: ./
+    env_file:
+      - ./.env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: postgres:12.0-alpine
+    env_file:
+      - ./.env.dev
+    ports:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
