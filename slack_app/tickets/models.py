@@ -4,26 +4,46 @@ from django.contrib.postgres.fields import JSONField
 
 class Ticket(models.Model):
 
+    NOT_STARTED = 'not started'
+    DOING = 'doing'
+    DONE = 'done'
+
+    LOW = 'low'
+    MEDIUM = 'medium'
+    HIGH = 'high'
+
     STATUS = (
-        ('not started', 'not started'),
-        ('doing', 'doing'),
-        ('done', 'done'),
+        (NOT_STARTED, 'not started'),
+        (DOING, 'doing'),
+        (DONE, 'done'),
     )
 
     SEVERITY = (
-        ('low', 'low'),
-        ('medium', 'medium'),
-        ('high', 'high')
+        (LOW, 'low'),
+        (MEDIUM, 'medium'),
+        (HIGH, 'high')
     )
+
+    namespace = models.ForeignKey('Namespace', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=50)
     description = models.TextField()
     status = models.CharField(max_length=12, choices=STATUS)
     severity = models.CharField(max_length=10, choices=SEVERITY)
     reporter = models.CharField(max_length=25)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data = JSONField(default={})
+
+    data = JSONField(default=dict)
 
     def __str__(self):
         return f'{self.title} of {self.reporter}'
+
+
+class Namespace(models.Model):
+
+    name = models.CharField(max_length=25, unique=True)
+
+    def __str__(self):
+        return f'{self.name}'

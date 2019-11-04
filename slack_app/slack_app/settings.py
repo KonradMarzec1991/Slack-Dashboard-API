@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+
     'tickets',
 ]
 
@@ -86,12 +88,12 @@ WSGI_APPLICATION = 'slack_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('POSTGRES_ENGINE', "django.db.backends.sqlite3"),
-        'NAME': os.environ.get('POSTGRES_DATABASE', os.path.join(BASE_DIR, "db.sqlite3")),
-        'USER': os.environ.get('POSTGRES_USER', 'user'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+        'ENGINE': os.environ.get('POSTGRES_ENGINE', "django.db.backends.postgresql"),
+        'NAME': os.environ.get('POSTGRES_DATABASE', 'tickets_db'),
+        'USER': os.environ.get('POSTGRES_USER', 'tickets'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'tickets123'),
         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT': os.environ.get('POSTGES_PORT', 5432),
+        'PORT': os.environ.get('POSTGRES_PORT', 5432),
     }
 }
 
