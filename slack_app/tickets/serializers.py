@@ -11,6 +11,20 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'title', 'description', 'status', 'severity', 'reporter', 'namespace'
+            'id', 'title', 'description', 'status', 'severity', 'reporter', 'namespace'
         ]
+        extra_kwargs = {
+            'status': {
+                'help_text': "Status might be only one of not started / doing / done"
+            },
+            'severity': {
+                'help_text': "Severity might be only one of low / medium / high"
+            }
+        }
+
+
+class NamespaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Namespace
+        fields = ['name']
 
