@@ -1,0 +1,23 @@
+[
+{
+    "model": "tickets.namespace",
+    "pk": 1,
+    "fields": {
+        "name": "teamwork"
+    }
+},
+{
+    "model": "tickets.namespace",
+    "pk": 2,
+    "fields": {
+        "name": "groupwork"
+    }
+},
+{
+    "model": "tickets.namespace",
+    "pk": 3,
+    "fields": {
+        "name": "singlework"
+    }
+}
+]

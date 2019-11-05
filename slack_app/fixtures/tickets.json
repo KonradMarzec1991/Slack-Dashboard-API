@@ -1,0 +1,110 @@
+[
+{
+    "model": "tickets.ticket",
+    "pk": 1,
+    "fields": {
+        "namespace": 1,
+        "title": "Ticket_1",
+        "description": "Ticket_1",
+        "status": "not started",
+        "severity": "low",
+        "reporter": "konrad",
+        "created_at": "2019-11-04T21:10:16.393Z",
+        "updated_at": "2019-11-05T20:09:48.007Z",
+        "data": {
+            "channel": "xx",
+            "workspace": "AA"
+        }
+    }
+},
+{
+    "model": "tickets.ticket",
+    "pk": 2,
+    "fields": {
+        "namespace": 1,
+        "title": "Ticket_2",
+        "description": "Ticket_2",
+        "status": "not started",
+        "severity": "medium",
+        "reporter": "konrad",
+        "created_at": "2019-11-04T21:10:27.606Z",
+        "updated_at": "2019-11-05T20:10:01.957Z",
+        "data": {
+            "channel": "xx",
+            "workspace": "BB"
+        }
+    }
+},
+{
+    "model": "tickets.ticket",
+    "pk": 3,
+    "fields": {
+        "namespace": 1,
+        "title": "Ticket_2",
+        "description": "Ticket_2",
+        "status": "not started",
+        "severity": "medium",
+        "reporter": "konrad",
+        "created_at": "2019-11-04T21:10:32.026Z",
+        "updated_at": "2019-11-05T20:10:12.032Z",
+        "data": {
+            "channel": "yy",
+            "workspace": "AA"
+        }
+    }
+},
+{
+    "model": "tickets.ticket",
+    "pk": 4,
+    "fields": {
+        "namespace": 2,
+        "title": "Ticket_4",
+        "description": "Ticket_4",
+        "status": "doing",
+        "severity": "high",
+        "reporter": "agnieszka",
+        "created_at": "2019-11-05T20:05:30.313Z",
+        "updated_at": "2019-11-05T20:10:24.963Z",
+        "data": {
+            "channel": "xx",
+            "workspace": "CC"
+        }
+    }
+},
+{
+    "model": "tickets.ticket",
+    "pk": 5,
+    "fields": {
+        "namespace": 3,
+        "title": "Ticket_5",
+        "description": "Ticket_5",
+        "status": "done",
+        "severity": "medium",
+        "reporter": "agnieszka",
+        "created_at": "2019-11-05T20:05:53.145Z",
+        "updated_at": "2019-11-05T20:10:46.466Z",
+        "data": {
+            "channel": "yy",
+            "workspace": "CC"
+        }
+    }
+},
+{
+    "model": "tickets.ticket",
+    "pk": 6,
+    "fields": {
+        "namespace": 3,
+        "title": "Ticket_6",
+        "description": "Ticket_6",
+        "status": "not started",
+        "severity": "low",
+        "reporter": "konrad",
+        "created_at": "2019-11-05T20:06:08.205Z",
+        "updated_at": "2019-11-05T20:10:56.865Z",
+        "data": {
+            "channel": "zz",
+            "workspace": "BB"
+        }
+    }
+}
+]

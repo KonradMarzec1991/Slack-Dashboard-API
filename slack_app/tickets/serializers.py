@@ -11,7 +11,7 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'id', 'title', 'description', 'status', 'severity', 'reporter', 'namespace'
+            'id', 'title', 'description', 'status', 'severity', 'reporter', 'data', 'namespace'
         ]
         extra_kwargs = {
             'status': {
@@ -19,6 +19,9 @@ class TicketSerializer(serializers.ModelSerializer):
             },
             'severity': {
                 'help_text': "Severity might be only one of low / medium / high"
+            },
+            'data': {
+                'help_text': "Valid data json should contain workspace and channel"
             }
         }
 

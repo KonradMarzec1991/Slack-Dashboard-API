@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from tickets.api import TicketViewSet, NamespaceViewSet
+from tickets.views import TicketViewSet, NamespaceViewSet
 
 from rest_framework.routers import DefaultRouter
 
