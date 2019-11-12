@@ -4,8 +4,10 @@ Tickets and namespace models with managers
 
 from django.db.models import Q
 
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+
 
 from .validators import (
     validate_data,
@@ -21,14 +23,14 @@ class TicketManager(models.Manager):
         2) Workspace and channel hierarchy - dictionary of workspaces with
         unique channels within
     """
-    def get_filtered_qs(self, workspace=None, channels=None, q=None, status=None, severity=None):
+    def get_filtered_qs(self, workspace=None, channel=None, q=None, status=None, severity=None):
         qs = self.get_queryset()
 
         if workspace:
             qs = qs.filter(data__workspace=workspace)
-        if channels:
-            channels = channels.split(',')
-            qs = qs.filter(data__channels_in=channels)
+        if channel:
+            channels = channel.split(',')
+            qs = qs.filter(data__channel_in=channels)
         if q:
             qs = qs.filter(
                 Q(title__icontains=q) | Q(description__icontains=q)
@@ -38,6 +40,24 @@ class TicketManager(models.Manager):
         if severity:
             qs = qs.filter(severity=severity)
         return qs
+
+    def get_one_column_data(self, col_name):
+        return self.get_queryset().values_list(col_name, flat=True)
+
+    def get_workspace_hierarchy(self):
+        qs = self.get_one_column_data('data')
+        workspace_list = dict()
+
+        for item in qs:
+            workspace = item['workspace']
+            channel = item['channel']
+
+            if workspace not in workspace_list:
+                workspace_list[workspace] = []
+            if channel not in workspace_list[workspace]:
+                workspace_list[workspace].append(channel)
+
+        return workspace_list
 
 
 class Ticket(models.Model):

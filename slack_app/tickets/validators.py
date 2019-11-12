@@ -6,6 +6,12 @@ from django.core.validators import ValidationError
 
 
 def is_none_or_not_in(param, attributes=None):
+    """
+    Checks if model field value is None or is not in given list
+    :param param: field value
+    :param attributes: given list
+    :return: boolean value
+    """
     if attributes is None:
         return param is None
     return param is None or param not in attributes

@@ -1,9 +1,16 @@
+"""
+API views
+"""
+
 from rest_framework import viewsets
+from rest_framework.response import Response
+
 
 from .serializers import (
     TicketSerializer,
     NamespaceSerializer
 )
+
 
 from .models import (
     Ticket,
@@ -44,7 +51,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         severity = url_params.get('severity', None)
 
         workspace = url_params.get('workspace', None)
-        channels = url_params.get('channels', None)
+        channels = url_params.get('channel', None)
 
         return Ticket.objects.get_filtered_qs(
             workspace,
@@ -55,7 +62,17 @@ class TicketViewSet(viewsets.ModelViewSet):
         )
 
     def list(self, request, *args, **kwargs):
-        pass
+        """
+        Returns serialized tickets and workspace hierarchy
+        """
+        qs = TicketSerializer(self.get_queryset(), many=True).data
+        wk_list = Ticket.objects.get_workspace_hierarchy()
+
+        resp = {
+            'list': qs,
+            'workspace': wk_list
+        }
+        return Response(resp)
 
 
 class NamespaceViewSet(viewsets.ModelViewSet):
