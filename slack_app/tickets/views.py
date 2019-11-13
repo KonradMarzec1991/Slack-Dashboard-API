@@ -5,17 +5,17 @@ API views
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-
 from .serializers import (
     TicketSerializer,
     NamespaceSerializer
 )
 
-
 from .models import (
     Ticket,
     Namespace
 )
+
+from .pagination import TicketPagination
 
 
 class SingleTicketViewSet(viewsets.ModelViewSet):
@@ -35,8 +35,10 @@ class TicketViewSet(viewsets.ModelViewSet):
         a) filtered qs with tickets
         b) workspace / channel hierarchy
     """
+
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
+    pagination_class = TicketPagination
 
     def get_queryset(self):
         """
@@ -65,7 +67,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         """
         Returns serialized tickets and workspace hierarchy
         """
-        qs = TicketSerializer(self.get_queryset(), many=True).data
+        qs = super().get_paginated_response(request)
         wk_list = Ticket.objects.get_workspace_hierarchy()
 
         resp = {
