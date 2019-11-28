@@ -67,11 +67,11 @@ class TicketViewSet(viewsets.ModelViewSet):
         """
         Returns serialized tickets and workspace hierarchy
         """
-        qs = super().get_paginated_response(request)
+        qs = super(TicketViewSet, self).list(request)
         wk_list = Ticket.objects.get_workspace_hierarchy()
 
         resp = {
-            'list': qs,
+            'list': qs.data,
             'workspace': wk_list
         }
         return Response(resp)
