@@ -18,6 +18,10 @@ def is_none_or_not_in(param, attributes=None):
 
 
 def validate_data(value):
+    """
+    :param value: JSON data
+    :return: validates if JSON data contains workspace and channel keys
+    """
     if is_none_or_not_in(value) or value == {}:
         raise ValidationError('Data cannot be empty or null')
     try:
