@@ -114,3 +114,5 @@ media/
 
 .idea/*
 .idea/
+
+.env.dev
