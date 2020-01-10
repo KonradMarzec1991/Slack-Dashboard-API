@@ -7,11 +7,11 @@ from django.conf import settings
 
 class Status:
     """
-    Class Status delivers API status/version
+    Keeps global API properties to be displayed under an URL
     """
 
     @property
-    def status(self):
+    def commit(self):
         return getattr(settings, 'COMMIT')
 
     @property
@@ -22,7 +22,7 @@ class Status:
 def is_status_attr_public(attr):
     """
     :param attr: name of class attribute
-    :return: bool if attr is public
+    :return: if attr is public (bool value)
     """
     return not attr.startswith("_") and hasattr(Status, attr)
 

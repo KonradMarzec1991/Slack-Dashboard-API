@@ -14,6 +14,13 @@ from .models import (
 
 
 class StatusViewSet(ViewSet):
+    """
+    Get a mapping from status keys (strings) to their values
+    (may be different types).
+
+    Provide a key in the URL after slash to GET a mapping
+    containing only that specific key and its value
+    """
 
     lookup_field = 'key'
     permission_classes = ()

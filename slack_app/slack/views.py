@@ -8,7 +8,10 @@ import json
 from tickets.models import Ticket
 
 
-SLACK_TOKEN = settings.SLACK_TOKEN
+from .provider import Provider
+
+
+SLACK_TOKEN = 'xoxp-676821839270-668325959633-847237361090-8a6d7ed7c4d49b744f27844b7807fca3'
 URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
@@ -17,81 +20,11 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 def display_dialog(request):
 
     request_data = request.POST
-    text = request_data['text']
-
-    dialog = {
-        "callback_id": "ryde-46e2b0",
-        "title": "Create todo",
-        "submit_label": "Submit",
-        "notify_on_cancel": True,
-        "state": "Limo",
-        "elements": [
-            {
-                "label": "Title",
-                "name": "title",
-                "type": "text",
-                "placeholder": "my ticket..."
-            },
-            {
-                "label": "Description",
-                "name": "description",
-                "type": "textarea",
-                "hint": "Provide details of ticket"
-
-            },
-            {
-                "label": "Status",
-                "name": "status",
-                "type": "select",
-                "options": [
-                    {
-                        "label": "not started",
-                        "value": "not started"
-                    },
-                    {
-                        "label": "doing",
-                        "value": "doing"
-                    },
-                    {
-                        "label": "done",
-                        "value": "done"
-                    }
-                ]
-            },
-            {
-                "label": "Severity",
-                "name": "severity",
-                "type": "select",
-                "options": [
-                    {
-                        "label": "low",
-                        "value": "low"
-                    },
-                    {
-                        "label": "medium",
-                        "value": "medium"
-                    },
-                    {
-                        "label": "high",
-                        "value": "high"
-                    }
-                ]
-            }
-        ]
-    }
-
-    data = {
-        'token': SLACK_TOKEN,
-        'trigger_id': request_data['trigger_id'],
-        'dialog': json.dumps(dialog)
-    }
-
-    response = requests.post(URL_DIALOG_OPEN, data=data)
-    content = json.loads(response.content)
+    p = Provider()
+    content = p.display_dialog(request_data['trigger_id'])
 
     if not content['ok']:
         return HttpResponse('Something went wrong, please try again...')
-
     return HttpResponse(status=200)
 
 
@@ -99,23 +32,24 @@ def display_dialog(request):
 def proceed_payload(request):
 
     data = request.POST
+
     data_dict = json.loads(data['payload'])
-    print(data_dict)
 
     reporter = data_dict['user']['name']  # user name
 
     channel_id = data_dict['channel']['id']  # channel JSON
     team_id = data_dict['team']['id']  # workspace JSON
 
+    p = Provider()
+
+    workspace = p.get_workspace(team_id)
+    channel = p.get_channel(channel_id)
+
     if data_dict['type'] == 'dialog_cancellation':
-
-        data = {
-            'token': SLACK_TOKEN,
-            'channel': channel_id,
-            'text': 'Ticket has been cancelled'
-        }
-
-        response = requests.post(URL_POST_MESSAGE, data=data)
+        p.send_message(
+            channel_id,
+            'Creation of ticket has been cancelled'
+        )
         return HttpResponse(status=200)
 
     data = {
