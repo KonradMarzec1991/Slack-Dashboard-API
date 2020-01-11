@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 ]
 
 MY_APPS = [
-    'tickets'
+    'tickets',
+    'status',
 ]
 
 INSTALLED_APPS += MY_APPS
