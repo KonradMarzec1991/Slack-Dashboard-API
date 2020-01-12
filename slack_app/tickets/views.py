@@ -1,5 +1,6 @@
+# pylint: disable=no-member
 """
-API views
+Main ticket API views for filtering and displaying all tickets in db
 """
 
 from rest_framework import viewsets
@@ -19,6 +20,7 @@ from .pagination import TicketPagination
 
 
 class SingleTicketViewSet(viewsets.ModelViewSet):
+    # pylint: disable=too-many-ancestors
     """
     View without filtering system
     """
@@ -27,6 +29,7 @@ class SingleTicketViewSet(viewsets.ModelViewSet):
 
 
 class TicketViewSet(viewsets.ModelViewSet):
+    # pylint: disable=too-many-ancestors
     """
     Ticket modelSetView, two methods are overwritten:
 
@@ -64,6 +67,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         )
 
     def list(self, request, *args, **kwargs):
+        # pylint: disable=unused-argument
         """
         Returns serialized tickets and workspace hierarchy
         """
@@ -78,5 +82,6 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 
 class NamespaceViewSet(viewsets.ModelViewSet):
+    # pylint: disable=too-many-ancestors
     serializer_class = NamespaceSerializer
     queryset = Namespace.objects.all()

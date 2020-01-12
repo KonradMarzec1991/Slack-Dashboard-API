@@ -26,9 +26,11 @@ class StatusViewSet(ViewSet):
     permission_classes = ()
 
     def list(self, request):
+        # pylint: disable=unused-argument,no-self-use
         return Response(status_dict())
 
     def retrieve(self, request, key):
+        # pylint: disable=unused-argument,no-self-use
         if not is_status_attr_public(key):
             raise Http404
         return Response(status_dict(key))
