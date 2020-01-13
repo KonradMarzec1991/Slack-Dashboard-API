@@ -22,7 +22,7 @@ from .pagination import TicketPagination
 class SingleTicketViewSet(viewsets.ModelViewSet):
     # pylint: disable=too-many-ancestors
     """
-    View without filtering system
+    Ticket view without filtering functions
     """
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
