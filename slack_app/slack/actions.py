@@ -2,15 +2,15 @@
 Slack actions for interactions with db/server
 """
 
-import requests
+
+from .provider import Provider
 
 
-class Actions:
+class Actions(Provider):
 
-    def __init__(self, provider, channel_id, user):
-        self.provider = provider
+    def __init__(self, channel_id):
+        super().__init__()
         self.channel_id = channel_id
-        self.user = user
 
     def show_tickets(self, tickets):
         if not tickets.all():
@@ -24,23 +24,7 @@ class Actions:
                 text += f'severity: {ticket.severity}\n'
                 text += f'created at: {ticket.created_at}\n'
 
-        return self.provider.send_message(
+        return self.send_message(
             channel_id=self.channel_id,
             text=text
         )
-
-    def create_dialog(self, trigger_id):
-
-        post_url = 'https://slack.com/api/dialog.open'
-
-        data = {
-            'token': self.provider.token,
-            'trigger_id': trigger_id,
-            'dialog': self.provider.display_dialog()
-        }
-
-        resp = requests.post(
-            url=post_url,
-            data=data
-        )
-        return resp

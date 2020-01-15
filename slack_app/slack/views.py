@@ -11,7 +11,7 @@ from .provider import Provider
 from .actions import Actions
 
 
-SLACK_TOKEN = 'xoxp-676821839270-668325959633-897830656545-c899b85b7bc4877cc0c10253a961d9b6'
+SLACK_TOKEN = ''
 URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
@@ -22,7 +22,10 @@ def display_dialog(request):
     request_data = request.POST
     print(request_data)
     p = Provider()
-    content = p.display_dialog(request_data['trigger_id'])
+    a = Actions(request_data['channel_id'])
+    # content = p.display_dialog(request_data['trigger_id'])
+    content = a.display_dialog(request_data['trigger_id'])
+    print(content)
 
     if not content['ok']:
         return HttpResponse('Something went wrong, please try again...')

@@ -23,7 +23,7 @@ class Provider:
     URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 
     def __init__(self):
-        self.token = 'xoxp-676821839270-668325959633-897830656545-c899b85b7bc4877cc0c10253a961d9b6'
+        self.token = ''
 
     def get_channel(self, channel_id):
         """
