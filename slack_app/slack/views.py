@@ -2,16 +2,16 @@ from celery import shared_task
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
-from django.conf import settings
 import requests
 import json
 from tickets.models import Ticket
 
 
 from .provider import Provider
+from .actions import Actions
 
 
-SLACK_TOKEN = 'xoxp-676821839270-668325959633-847237361090-8a6d7ed7c4d49b744f27844b7807fca3'
+SLACK_TOKEN = 'xoxp-676821839270-668325959633-897830656545-c899b85b7bc4877cc0c10253a961d9b6'
 URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
@@ -20,6 +20,7 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 def display_dialog(request):
 
     request_data = request.POST
+    print(request_data)
     p = Provider()
     content = p.display_dialog(request_data['trigger_id'])
 
