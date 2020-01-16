@@ -4,28 +4,20 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 import requests
 import json
-from tickets.models import Ticket
 
-
+from tickets.models import Ticket, Namespace
 from .provider import Provider
 from .actions import Actions
 
 
-SLACK_TOKEN = ''
-URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
 def display_dialog(request):
-
     request_data = request.POST
-    print(request_data)
-    p = Provider()
     a = Actions(request_data['channel_id'])
-    # content = p.display_dialog(request_data['trigger_id'])
     content = a.display_dialog(request_data['trigger_id'])
-    print(content)
 
     if not content['ok']:
         return HttpResponse('Something went wrong, please try again...')
@@ -44,32 +36,33 @@ def proceed_payload(request):
     channel_id = data_dict['channel']['id']  # channel JSON
     team_id = data_dict['team']['id']  # workspace JSON
 
-    p = Provider()
+    a = Actions(channel_id=channel_id)
 
-    workspace = p.get_workspace(team_id)
-    channel = p.get_channel(channel_id)
+    workspace = a.get_workspace(team_id)
+    channel = a.get_channel(channel_id)
 
     if data_dict['type'] == 'dialog_cancellation':
-        p.send_message(
-            channel_id,
-            'Creation of ticket has been cancelled'
+        a.send_message(
+            channel_id=channel_id,
+            text='Creation of ticket has been cancelled'
         )
         return HttpResponse(status=200)
 
-    data = {
-        'token': SLACK_TOKEN,
-        'channel': channel_id,
-        'text': 'Processing request...'
-    }
+    # data = {
+    #     'token': a.token,
+    #     'channel': channel_id,
+    #     'text': 'Processing request...'
+    # }
 
     title = data_dict['submission']['title']
     description = data_dict['submission']['description']
     status = data_dict['submission']['status']
     severity = data_dict['submission']['severity']
 
-    response_url = data_dict['response_url']
+    # response_url = data_dict['response_url']
 
     ticket_data = {
+        'namespace': Namespace.objects.get(id=1),  # temporary solution
         'title': title,
         'description': description,
         'status': status,
@@ -81,9 +74,15 @@ def proceed_payload(request):
         })
     }
 
-    task = create_ticket.delay(ticket_data, response_url)
+    # task = create_ticket.delay(ticket_data, response_url)
+    Ticket.objects.create(**ticket_data)
 
-    response = requests.post(URL_POST_MESSAGE, data=data)
+    # response = requests.post(URL_POST_MESSAGE, data=data)
+
+    a.send_message(
+        channel_id=channel_id,
+        text='Ticket has been created'
+    )
 
     return HttpResponse(status=200)
 
@@ -92,9 +91,9 @@ def proceed_payload(request):
 def create_ticket(ticket_data, response_url):
 
     Ticket.objects.create(**ticket_data)
-
+    p = Provider()
     data = json.dumps({
-        'token': SLACK_TOKEN,
+        'token': p.token,
         'text': 'Ticket has been created'
     })
 
