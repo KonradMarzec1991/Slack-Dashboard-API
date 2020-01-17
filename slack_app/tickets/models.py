@@ -46,6 +46,7 @@ class TicketManager(models.Manager):
 
     def get_workspace_hierarchy(self):
         qs = self.get_one_column_data('data')
+
         workspace_list = dict()
 
         for item in qs:

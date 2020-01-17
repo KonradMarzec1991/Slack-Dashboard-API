@@ -14,6 +14,13 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
+def show_my_tickets(request):
+    print(request.POST)
+
+    return HttpResponse("Hello")
+
+
+@csrf_exempt
 def display_dialog(request):
     request_data = request.POST
     a = Actions(request_data['channel_id'])
@@ -68,10 +75,10 @@ def proceed_payload(request):
         'status': status,
         'severity': severity,
         'reporter': reporter,
-        'data': json.dumps({
-            'channel': channel_id,
-            'team_id': team_id
-        })
+        'data': {
+            'channel': channel,
+            'workspace': workspace
+        }
     }
 
     # task = create_ticket.delay(ticket_data, response_url)
