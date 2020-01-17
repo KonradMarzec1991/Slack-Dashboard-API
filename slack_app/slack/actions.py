@@ -1,5 +1,6 @@
 """
 Slack actions for interactions with db/server
+Overrides methods of provider to simplify using them
 """
 
 

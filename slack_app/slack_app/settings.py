@@ -16,6 +16,7 @@ import os
 COMMIT = os.getenv('COMMIT', '2874#952')
 VERSION = os.getenv('VERSION', '1.0.0')
 
+URL_PREFIX = 'api/'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,8 +27,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'a&u2n^+q!r^-e=m0yta%%av2e33h%2!biwv^di5j*3+++zje_#'
-
-SLACK_TOKEN = 'xoxb-676821839270-682460664294-42dMAoDFZvIIshCPkJjeWrCg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
