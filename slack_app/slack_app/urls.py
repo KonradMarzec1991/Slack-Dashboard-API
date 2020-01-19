@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 from django.urls import include, path
 
 from tickets.views import (
@@ -10,6 +11,10 @@ from tickets.views import (
 from status.views import StatusViewSet
 
 from rest_framework.routers import DefaultRouter
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
 
 ticket_router = DefaultRouter()
 ticket_router.register(r'', TicketViewSet)
@@ -23,7 +28,19 @@ namespace_router.register(r'', NamespaceViewSet)
 status_router = DefaultRouter()
 status_router.register(r'', StatusViewSet, base_name='status_view_set')
 
+# swagger documentation
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Tickets API Documentation",
+      default_version=getattr(settings, 'VERSION', None),
+      description="** API Documentation **",
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
 urlpatterns = [
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
     path('', include('slack.urls')),
     path('tickets/', include(ticket_router.urls)),
