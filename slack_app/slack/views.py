@@ -14,10 +14,51 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
-def show_my_tickets(request):
-    print(request.POST)
+def test_layout(request):
+    blocks = [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*出発地*"
+            },
+            "accessory": {
+                "type": "external_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "emoji": True,
+                    "text": "駅/バス停を入力"
+                },
+                "min_query_length": 1
+            }
+        }
+    ]
 
-    return HttpResponse("Hello")
+    p = Provider()
+
+    data = {
+        'token': p.token,
+        'channel': request.POST.get('channel_id'),
+        'blocks': json.dumps(blocks)
+
+    }
+    response = requests.post('https://slack.com/api/chat.postMessage', data=data)
+    print(response.content)
+    print(response.text)
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
+def show_my_tickets(request):
+    reporter = request.POST.get('user_name')
+    channel_id = request.POST.get('channel_id')
+    user_tickets = Ticket.objects.filter(
+        reporter=reporter
+    )
+
+    actions = Actions(channel_id)
+    actions.show_tickets(user_tickets)
+    return HttpResponse(status=200)
 
 
 @csrf_exempt

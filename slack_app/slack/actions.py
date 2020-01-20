@@ -14,7 +14,7 @@ class Actions(Provider):
         self.channel_id = channel_id
 
     def show_tickets(self, tickets):
-        if not tickets.all():
+        if not tickets.exists():
             text = 'You do not have any tickets'
         else:
             text = 'Your tickets\n'
@@ -24,6 +24,7 @@ class Actions(Provider):
                 text += f'status: {ticket.status}\n'
                 text += f'severity: {ticket.severity}\n'
                 text += f'created at: {ticket.created_at}\n'
+                text += '{"type": "divider"}'
 
         return self.send_message(
             channel_id=self.channel_id,
