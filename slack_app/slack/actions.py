@@ -121,7 +121,7 @@ class Actions(Provider):
                         "text": "Edit"
                     },
                     "style": "primary",
-                    "value": "click_me_123"
+                    "action_id": 'cccc'
                 },
                 {
                     "type": "button",
@@ -131,7 +131,7 @@ class Actions(Provider):
                         "text": "Delete"
                     },
                     "style": "danger",
-                    "value": "click_me_123"
+                    "action_id": 'aaaa'
                 }
             ]
         }

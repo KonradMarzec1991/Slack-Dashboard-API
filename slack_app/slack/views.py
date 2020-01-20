@@ -44,6 +44,7 @@ def show_my_tickets(request):
 
     }
     response = requests.post('https://slack.com/api/chat.postMessage', data=data)
+    print(response.text)
     return HttpResponse(status=200)
 
 
@@ -60,6 +61,7 @@ def display_dialog(request):
 
 @csrf_exempt
 def proceed_payload(request):
+    print(request.POST)
 
     data = request.POST
 
