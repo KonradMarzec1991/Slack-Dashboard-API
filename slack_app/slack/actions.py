@@ -28,6 +28,44 @@ class Actions(Provider):
         return text
 
     @staticmethod
+    def slack_information():
+        template = \
+        [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Hey there* 👋 I'm TicketBot. I'm here to help you create and manage tickets in Slack.\n"
+                            "There are two commands to manage/create tasks:"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*1️⃣ `/show_tickets` command*. "
+                            "Type `/show_tickets-tasks` displays all your current unclosed tickets"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*2️⃣ `/create` command*. "
+                            "Type `/create` to open dialog form and create ticket"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": ":star: Have fun!!! :star:"
+                }
+            }
+        ]
+        return template
+
+    @staticmethod
     def tickets_main_section(text):
         template = \
             {
@@ -97,7 +135,6 @@ class Actions(Provider):
                 }
             ]
         }
-
         return template
 
     @staticmethod

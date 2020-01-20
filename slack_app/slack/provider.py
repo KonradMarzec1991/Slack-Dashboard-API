@@ -51,18 +51,20 @@ class Provider:
         response = json.loads(res.content)
         return response['team']['name']
 
-    def send_message(self, channel_id, text):
+    def send_message(self, channel_id, text=None, blocks=None):
         """
         :param channel_id: channel ID from Slack API
         :param text: message text
+        :param blocks: slack blocks for formatting message
         :return: message to user via Slack
         """
         data = {
             'token': self.token,
             'channel': channel_id,
-            'text': text,
-
+            'text': text if text else None,
+            'blocks': blocks if blocks else None
         }
+
         response = requests.post(self.URL_SEND_MESSAGE, data=data)
         return HttpResponse(status=200)
 

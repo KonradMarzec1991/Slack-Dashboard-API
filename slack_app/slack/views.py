@@ -14,6 +14,20 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
+def display_information(request):
+    channel_id = request.POST.get('channel_id')
+    actions = Actions(channel_id)
+
+    actions.send_message(
+        channel_id=channel_id,
+        blocks=json.dumps(
+            actions.slack_information()
+        )
+    )
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
 def show_my_tickets(request):
     reporter = request.POST.get('user_name')
     channel_id = request.POST.get('channel_id')
