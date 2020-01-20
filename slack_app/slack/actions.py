@@ -14,15 +14,33 @@ class Actions(Provider):
         self.channel_id = channel_id
 
     def show_tickets(self, tickets):
+        text = []
         if not tickets.exists():
-            text = 'You do not have any tickets'
+            text.append(self.tickets_main_section(
+                "*:star: You do not have tickets:star :*"))
         else:
-            text = []
+            text.append(self.tickets_main_section(
+                "*:star: Your tickets: :star:*"))
             for ticket in tickets:
-                text.append(self.template_ticket(ticket))
+                text.append(self.ticket_section(ticket))
+                text.append(self.ticket_buttons())
+                text.append(self.ticket_divider())
         return text
 
-    def template_ticket(self, ticket):
+    @staticmethod
+    def tickets_main_section(text):
+        template = \
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": text
+                }
+            }
+        return template
+
+    @staticmethod
+    def ticket_section(ticket):
         template = \
         {
             "type": "section",
@@ -48,34 +66,40 @@ class Actions(Provider):
                     "text": f"*Created at:*\n{ticket.created_at}"
                 }
             ]
-        },
-        # {
-        #     "type": "actions",
-        #     "elements": [
-        #         {
-        #             "type": "button",
-        #             "text": {
-        #                 "type": "plain_text",
-        #                 "emoji": True,
-        #                 "text": "Edit"
-        #             },
-        #             "style": "primary",
-        #             "value": "click_me_123"
-        #         },
-        #         {
-        #             "type": "button",
-        #             "text": {
-        #                 "type": "plain_text",
-        #                 "emoji": True,
-        #                 "text": "Delete"
-        #             },
-        #             "style": "danger",
-        #             "value": "click_me_123"
-        #         }
-        #     ]
-        # },
-        # {
-        #     "type": "divider"
-        # },
+        }
+        return template
+
+    @staticmethod
+    def ticket_buttons():
+        template = \
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "emoji": True,
+                        "text": "Edit"
+                    },
+                    "style": "primary",
+                    "value": "click_me_123"
+                },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "emoji": True,
+                        "text": "Delete"
+                    },
+                    "style": "danger",
+                    "value": "click_me_123"
+                }
+            ]
+        }
 
         return template
+
+    @staticmethod
+    def ticket_divider():
+        return {"type": "divider"}

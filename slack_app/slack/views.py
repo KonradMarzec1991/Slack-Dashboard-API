@@ -14,67 +14,22 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
 @csrf_exempt
-def test_layout(request):
-    reporter = request.POST.get('user_name')
-    channel_id = request.POST.get('channel_id')
-    user_tickets = Ticket.objects.filter(
-        reporter=reporter
-    )
-    a = Actions(channel_id)
-    # blocks = a.show_tickets(user_tickets)
-    # print(blocks)
-
-    blocks = []
-    template1 = {
-			"type": "context",
-			"elements": [
-				{
-					"type": "image",
-					"image_url": "https://api.slack.com/img/blocks/bkb_template_images/notificationsWarningIcon.png",
-					"alt_text": "notifications warning icon"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Conflicts with Team Huddle: 4:15-4:30pm*"
-				}
-			]
-		}
-
-    template2 = {
-			"type": "divider"
-		}
-
-
-    blocks.append(template1)
-    blocks.append(template2)
-    blocks.append(template1)
-    blocks.append(template2)
-    blocks.append(template1)
-    blocks.append(template2)
-
-    p = Provider()
-
-    data = {
-        'token': p.token,
-        'channel': request.POST.get('channel_id'),
-        'blocks': json.dumps(blocks)
-
-    }
-    response = requests.post('https://slack.com/api/chat.postMessage', data=data)
-    print(response.text)
-    return HttpResponse(status=200)
-
-
-@csrf_exempt
 def show_my_tickets(request):
     reporter = request.POST.get('user_name')
     channel_id = request.POST.get('channel_id')
     user_tickets = Ticket.objects.filter(
         reporter=reporter
     )
+    a = Actions(channel_id)
+    blocks = a.show_tickets(user_tickets)
 
-    actions = Actions(channel_id)
-    actions.show_tickets(user_tickets)
+    data = {
+        'token': a.token,
+        'channel': channel_id,
+        'blocks': json.dumps(blocks)
+
+    }
+    response = requests.post('https://slack.com/api/chat.postMessage', data=data)
     return HttpResponse(status=200)
 
 
