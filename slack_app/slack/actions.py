@@ -17,16 +17,65 @@ class Actions(Provider):
         if not tickets.exists():
             text = 'You do not have any tickets'
         else:
-            text = 'Your tickets\n'
+            text = []
             for ticket in tickets:
-                text += f'{ticket.title.capitalize()}\n'
-                text += f'{ticket.description}\n'
-                text += f'status: {ticket.status}\n'
-                text += f'severity: {ticket.severity}\n'
-                text += f'created at: {ticket.created_at}\n'
-                text += '{"type": "divider"}'
+                text.append(self.template_ticket(ticket))
+        return text
 
-        return self.send_message(
-            channel_id=self.channel_id,
-            text=text
-        )
+    def template_ticket(self, ticket):
+        template = \
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Title:*\n{ticket.title.capitalize()}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Description:*\n{ticket.description}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Status:*\n{ticket.status}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Severity:*\n{ticket.severity}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Created at:*\n{ticket.created_at}"
+                }
+            ]
+        },
+        # {
+        #     "type": "actions",
+        #     "elements": [
+        #         {
+        #             "type": "button",
+        #             "text": {
+        #                 "type": "plain_text",
+        #                 "emoji": True,
+        #                 "text": "Edit"
+        #             },
+        #             "style": "primary",
+        #             "value": "click_me_123"
+        #         },
+        #         {
+        #             "type": "button",
+        #             "text": {
+        #                 "type": "plain_text",
+        #                 "emoji": True,
+        #                 "text": "Delete"
+        #             },
+        #             "style": "danger",
+        #             "value": "click_me_123"
+        #         }
+        #     ]
+        # },
+        # {
+        #     "type": "divider"
+        # },
+
+        return template

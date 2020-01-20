@@ -15,24 +15,42 @@ URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 @csrf_exempt
 def test_layout(request):
-    blocks = [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*出発地*"
-            },
-            "accessory": {
-                "type": "external_select",
-                "placeholder": {
-                    "type": "plain_text",
-                    "emoji": True,
-                    "text": "駅/バス停を入力"
-                },
-                "min_query_length": 1
-            }
-        }
-    ]
+    reporter = request.POST.get('user_name')
+    channel_id = request.POST.get('channel_id')
+    user_tickets = Ticket.objects.filter(
+        reporter=reporter
+    )
+    a = Actions(channel_id)
+    # blocks = a.show_tickets(user_tickets)
+    # print(blocks)
+
+    blocks = []
+    template1 = {
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://api.slack.com/img/blocks/bkb_template_images/notificationsWarningIcon.png",
+					"alt_text": "notifications warning icon"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Conflicts with Team Huddle: 4:15-4:30pm*"
+				}
+			]
+		}
+
+    template2 = {
+			"type": "divider"
+		}
+
+
+    blocks.append(template1)
+    blocks.append(template2)
+    blocks.append(template1)
+    blocks.append(template2)
+    blocks.append(template1)
+    blocks.append(template2)
 
     p = Provider()
 
@@ -43,7 +61,6 @@ def test_layout(request):
 
     }
     response = requests.post('https://slack.com/api/chat.postMessage', data=data)
-    print(response.content)
     print(response.text)
     return HttpResponse(status=200)
 
