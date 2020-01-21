@@ -77,6 +77,22 @@ def proceed_payload(request):
     workspace = a.get_workspace(team_id)
     channel = a.get_channel(channel_id)
 
+    if data_dict['type'] == 'block_actions':
+        action_id = data_dict['actions'][0]['action_id']
+        type_action = action_id[0]
+        ticket_id_action = action_id[1:]
+
+        if type_action == 'D':
+            db_action = 'DELETE'
+        else:
+            db_action = 'EDIT'
+
+        a.send_message(
+            channel_id=channel_id,
+            text=f'You want to {db_action} ticket id: {ticket_id_action}'
+        )
+        return HttpResponse(status=200)
+
     if data_dict['type'] == 'dialog_cancellation':
         a.send_message(
             channel_id=channel_id,
