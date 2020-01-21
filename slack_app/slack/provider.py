@@ -139,7 +139,6 @@ class Provider:
             'trigger_id': trigger_id,
             'dialog': json.dumps(dialog)
         }
-
         response = requests.post(self.URL_DIALOG_OPEN, data=data)
         return json.loads(response.content)
 

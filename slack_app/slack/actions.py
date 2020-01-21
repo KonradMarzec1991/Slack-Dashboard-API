@@ -22,8 +22,9 @@ class Actions(Provider):
             text.append(self.tickets_main_section(
                 "*:star: Your tickets: :star:*"))
             for ticket in tickets:
+                print(ticket.id*10)
                 text.append(self.ticket_section(ticket))
-                text.append(self.ticket_buttons())
+                text.append(self.ticket_buttons(ticket.id))
                 text.append(self.ticket_divider())
         return text
 
@@ -44,7 +45,7 @@ class Actions(Provider):
                 "text": {
                     "type": "mrkdwn",
                     "text": "*1️⃣ `/show_tickets` command*. "
-                            "Type `/show_tickets-tasks` displays all your current unclosed tickets"
+                            "Type `/show_tickets-tasks` to displays all your current unclosed tickets"
                 }
             },
             {
@@ -108,7 +109,7 @@ class Actions(Provider):
         return template
 
     @staticmethod
-    def ticket_buttons():
+    def ticket_buttons(ticket_id):
         template = \
         {
             "type": "actions",
@@ -121,7 +122,7 @@ class Actions(Provider):
                         "text": "Edit"
                     },
                     "style": "primary",
-                    "action_id": 'cccc'
+                    "action_id": f'E{ticket_id}'
                 },
                 {
                     "type": "button",
@@ -131,7 +132,7 @@ class Actions(Provider):
                         "text": "Delete"
                     },
                     "style": "danger",
-                    "action_id": 'aaaa'
+                    "action_id": f'D{ticket_id}'
                 }
             ]
         }
