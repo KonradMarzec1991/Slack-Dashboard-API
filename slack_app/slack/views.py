@@ -61,9 +61,8 @@ def display_dialog(request):
 
 @csrf_exempt
 def proceed_payload(request):
-    print(request.POST)
-
     data = request.POST
+    print(data)
 
     data_dict = json.loads(data['payload'])
 
@@ -72,25 +71,22 @@ def proceed_payload(request):
     channel_id = data_dict['channel']['id']  # channel JSON
     team_id = data_dict['team']['id']  # workspace JSON
 
-    a = Actions(channel_id=channel_id)
-
-    workspace = a.get_workspace(team_id)
-    channel = a.get_channel(channel_id)
+    a = Actions(channel_id)
 
     if data_dict['type'] == 'block_actions':
+
         action_id = data_dict['actions'][0]['action_id']
         type_action = action_id[0]
         ticket_id_action = action_id[1:]
 
-        if type_action == 'D':
-            db_action = 'DELETE'
+        if type_action == 'E':
+            pass
+            a.display_dialog(data_dict['trigger_id'])
         else:
-            db_action = 'EDIT'
-
-        a.send_message(
-            channel_id=channel_id,
-            text=f'You want to {db_action} ticket id: {ticket_id_action}'
-        )
+            a.send_message(
+                channel_id=channel_id,
+                text=f'Sth to return'
+            )
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_cancellation':
@@ -100,43 +96,40 @@ def proceed_payload(request):
         )
         return HttpResponse(status=200)
 
-    # data = {
-    #     'token': a.token,
-    #     'channel': channel_id,
-    #     'text': 'Processing request...'
-    # }
+    if data_dict['type'] == 'dialog_submission':
 
-    title = data_dict['submission']['title']
-    description = data_dict['submission']['description']
-    status = data_dict['submission']['status']
-    severity = data_dict['submission']['severity']
+        def create_ticket(data_dict, channel_id, team_id):
+            title = data_dict['submission']['title']
+            description = data_dict['submission']['description']
+            status = data_dict['submission']['status']
+            severity = data_dict['submission']['severity']
 
-    # response_url = data_dict['response_url']
+            workspace = a.get_workspace(team_id)
+            channel = a.get_channel(channel_id)
 
-    ticket_data = {
-        'namespace': Namespace.objects.get(id=1),  # temporary solution
-        'title': title,
-        'description': description,
-        'status': status,
-        'severity': severity,
-        'reporter': reporter,
-        'data': {
-            'channel': channel,
-            'workspace': workspace
-        }
-    }
+            ticket_data = {
+                'namespace': Namespace.objects.get(id=1),  # temporary solution
+                'title': title,
+                'description': description,
+                'status': status,
+                'severity': severity,
+                'reporter': reporter,
+                'data': {
+                    'channel': channel,
+                    'workspace': workspace
+                }
+            }
+            ticket = Ticket.objects.create(**ticket_data)
+            return ticket
 
-    # task = create_ticket.delay(ticket_data, response_url)
-    Ticket.objects.create(**ticket_data)
+        create_ticket(data_dict, channel_id, team_id)
 
-    # response = requests.post(URL_POST_MESSAGE, data=data)
+        a.send_message(
+            channel_id=channel_id,
+            text='Ticket has been created'
+        )
 
-    a.send_message(
-        channel_id=channel_id,
-        text='Ticket has been created'
-    )
-
-    return HttpResponse(status=200)
+        return HttpResponse(status=200)
 
 
 @shared_task

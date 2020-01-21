@@ -74,7 +74,7 @@ class Provider:
         :return: opens dialog window to user
         """
         dialog = {
-            "callback_id": "ryde-46e2b0",
+            "callback_id": "ryde-46e2b0",  # potentially checker if edit or create
             "title": "Create todo",
             "submit_label": "Submit",
             "notify_on_cancel": True,
