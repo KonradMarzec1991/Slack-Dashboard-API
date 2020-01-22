@@ -96,7 +96,7 @@ class Provider:
                 {
                     "label": "Status",
                     "name": "status",
-                    "type": "select",
+                    "type": "select",  # value to populated in editing
                     "options": [
                         {
                             "label": "not started",

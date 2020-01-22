@@ -61,8 +61,6 @@ def display_dialog(request):
 @csrf_exempt
 def proceed_payload(request):
     data = request.POST
-    print(data)
-
     data_dict = json.loads(data['payload'])
 
     reporter = data_dict['user']['name']  # user name
@@ -76,7 +74,6 @@ def proceed_payload(request):
 
         action_id = data_dict['actions'][0]['action_id']
         type_action = action_id[0]
-        ticket_id_action = action_id[1:]
 
         if type_action == 'E':
             pass
@@ -84,8 +81,10 @@ def proceed_payload(request):
         else:
             a.send_message(
                 channel_id=channel_id,
-                text=f'Sth to return'
+                text='Future delete'
             )
+            return HttpResponse(status=200)
+
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_cancellation':
@@ -97,40 +96,48 @@ def proceed_payload(request):
 
     if data_dict['type'] == 'dialog_submission':
 
-        print(data_dict['callback_id'])
+        if data_dict['callback_id'] == 'create_ticket':
 
-        def create_ticket(data_dict, channel_id, team_id):
-            title = data_dict['submission']['title']
-            description = data_dict['submission']['description']
-            status = data_dict['submission']['status']
-            severity = data_dict['submission']['severity']
+            def create_ticket(data_dict, channel_id, team_id):
+                title = data_dict['submission']['title']
+                description = data_dict['submission']['description']
+                status = data_dict['submission']['status']
+                severity = data_dict['submission']['severity']
 
-            workspace = a.get_workspace(team_id)
-            channel = a.get_channel(channel_id)
+                workspace = a.get_workspace(team_id)
+                channel = a.get_channel(channel_id)
 
-            ticket_data = {
-                'namespace': Namespace.objects.get(id=1),  # temporary solution
-                'title': title,
-                'description': description,
-                'status': status,
-                'severity': severity,
-                'reporter': reporter,
-                'data': {
-                    'channel': channel,
-                    'workspace': workspace
+                ticket_data = {
+                    'namespace': Namespace.objects.get(id=1),  # temporary solution
+                    'title': title,
+                    'description': description,
+                    'status': status,
+                    'severity': severity,
+                    'reporter': reporter,
+                    'data': {
+                        'channel': channel,
+                        'workspace': workspace
+                    }
                 }
-            }
-            ticket = Ticket.objects.create(**ticket_data)
-            return ticket
+                ticket = Ticket.objects.create(**ticket_data)
+                return ticket
 
-        create_ticket(data_dict, channel_id, team_id)
+            create_ticket(data_dict, channel_id, team_id)
 
-        a.send_message(
-            channel_id=channel_id,
-            text='Ticket has been created'
-        )
+            a.send_message(
+                channel_id=channel_id,
+                text='Ticket has been created'
+            )
 
-        return HttpResponse(status=200)
+            return HttpResponse(status=200)
+
+        else:
+
+            a.send_message(
+                channel_id=channel_id,
+                text='You want edit ticket, not create'
+            )
+            return HttpResponse(status=200)
 
 
 @shared_task
