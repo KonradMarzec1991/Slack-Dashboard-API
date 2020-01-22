@@ -68,13 +68,13 @@ class Provider:
         response = requests.post(self.URL_SEND_MESSAGE, data=data)
         return HttpResponse(status=200)
 
-    def display_dialog(self, trigger_id):
+    def display_dialog(self, trigger_id, action_type):
         """
         :param trigger_id: trigger value of Slack event
         :return: opens dialog window to user
         """
         dialog = {
-            "callback_id": "ryde-46e2b0",  # potentially checker if edit or create
+            "callback_id": action_type,  # potentially checker if edit or create
             "title": "Create todo",
             "submit_label": "Submit",
             "notify_on_cancel": True,

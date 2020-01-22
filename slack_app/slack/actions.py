@@ -22,7 +22,6 @@ class Actions(Provider):
             text.append(self.tickets_main_section(
                 "*:star: Your tickets: :star:*"))
             for ticket in tickets:
-                print(ticket.id*10)
                 text.append(self.ticket_section(ticket))
                 text.append(self.ticket_buttons(ticket.id))
                 text.append(self.ticket_divider())

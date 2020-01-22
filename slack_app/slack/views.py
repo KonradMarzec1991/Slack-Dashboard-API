@@ -44,7 +44,6 @@ def show_my_tickets(request):
 
     }
     response = requests.post('https://slack.com/api/chat.postMessage', data=data)
-    print(response.text)
     return HttpResponse(status=200)
 
 
@@ -52,7 +51,7 @@ def show_my_tickets(request):
 def display_dialog(request):
     request_data = request.POST
     a = Actions(request_data['channel_id'])
-    content = a.display_dialog(request_data['trigger_id'])
+    content = a.display_dialog(request_data['trigger_id'], action_type='create_ticket')
 
     if not content['ok']:
         return HttpResponse('Something went wrong, please try again...')
@@ -81,7 +80,7 @@ def proceed_payload(request):
 
         if type_action == 'E':
             pass
-            a.display_dialog(data_dict['trigger_id'])
+            a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket')
         else:
             a.send_message(
                 channel_id=channel_id,
@@ -97,6 +96,8 @@ def proceed_payload(request):
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_submission':
+
+        print(data_dict['callback_id'])
 
         def create_ticket(data_dict, channel_id, team_id):
             title = data_dict['submission']['title']
