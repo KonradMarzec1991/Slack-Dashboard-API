@@ -74,10 +74,13 @@ def proceed_payload(request):
 
         action_id = data_dict['actions'][0]['action_id']
         type_action = action_id[0]
+        ticket_id = int(action_id[1:])
+
+        ticket = Ticket.objects.get(id=ticket_id)
+        print(ticket)
 
         if type_action == 'E':
-            pass
-            a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket')
+            a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket', ticket=ticket)
         else:
             a.send_message(
                 channel_id=channel_id,
@@ -131,7 +134,14 @@ def proceed_payload(request):
 
             return HttpResponse(status=200)
 
-        else:
+        elif data_dict['callback_id'] == 'edit_ticket':
+
+            print(data_dict)
+
+            title = data_dict['submission']['title']
+            description = data_dict['submission']['description']
+            status = data_dict['submission']['status']
+            severity = data_dict['submission']['severity']
 
             a.send_message(
                 channel_id=channel_id,

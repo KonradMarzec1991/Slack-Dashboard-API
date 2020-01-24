@@ -68,35 +68,38 @@ class Provider:
         response = requests.post(self.URL_SEND_MESSAGE, data=data)
         return HttpResponse(status=200)
 
-    def display_dialog(self, trigger_id, action_type):
+    def display_dialog(self, trigger_id, action_type, ticket=None):
         """
         :param trigger_id: trigger value of Slack event
         :return: opens dialog window to user
         """
         dialog = {
             "callback_id": action_type,  # potentially checker if edit or create
-            "title": "Create todo",
+            "title": "Create ticket",
             "submit_label": "Submit",
             "notify_on_cancel": True,
-            "state": "Limo",
+            "state": ticket.id if ticket else "Create todo",
             "elements": [
                 {
                     "label": "Title",
                     "name": "title",
                     "type": "text",
-                    "placeholder": "my ticket..."
+                    "placeholder": "my ticket...",
+                    "value": str(ticket.title.capitalize()) if ticket else None,
                 },
                 {
                     "label": "Description",
                     "name": "description",
                     "type": "textarea",
-                    "hint": "Provide details of ticket"
+                    "hint": "Provide details of ticket",
+                    "value": str(ticket.description) if ticket else None,
 
                 },
                 {
                     "label": "Status",
                     "name": "status",
                     "type": "select",  # value to populated in editing
+                    "value": str(ticket.status) if ticket else None,
                     "options": [
                         {
                             "label": "not started",
@@ -116,6 +119,7 @@ class Provider:
                     "label": "Severity",
                     "name": "severity",
                     "type": "select",
+                    "value": str(ticket.severity) if ticket else None,
                     "options": [
                         {
                             "label": "low",
@@ -141,13 +145,3 @@ class Provider:
         }
         response = requests.post(self.URL_DIALOG_OPEN, data=data)
         return json.loads(response.content)
-
-
-
-
-
-
-
-
-
-
