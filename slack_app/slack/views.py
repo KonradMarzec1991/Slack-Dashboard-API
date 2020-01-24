@@ -136,16 +136,25 @@ def proceed_payload(request):
 
         elif data_dict['callback_id'] == 'edit_ticket':
 
-            print(data_dict)
+            ticket_id = int(data_dict['state'])
+
+            ticket = Ticket.objects.get(id=ticket_id)
 
             title = data_dict['submission']['title']
             description = data_dict['submission']['description']
             status = data_dict['submission']['status']
             severity = data_dict['submission']['severity']
 
+            ticket.title = title
+            ticket.description = description
+            ticket.status = status
+            ticket.severity = severity
+
+            ticket.save()
+
             a.send_message(
                 channel_id=channel_id,
-                text='You want edit ticket, not create'
+                text=f'Ticket id {ticket_id} has been modified'
             )
             return HttpResponse(status=200)
 
