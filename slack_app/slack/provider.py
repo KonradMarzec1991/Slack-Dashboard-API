@@ -73,67 +73,210 @@ class Provider:
         :param trigger_id: trigger value of Slack event
         :return: opens dialog window to user
         """
-        dialog = {
-            "callback_id": action_type,  # potentially checker if edit or create
-            "title": "Create ticket",
-            "submit_label": "Submit",
-            "notify_on_cancel": True,
-            "state": ticket.id if ticket else "Create todo",
-            "elements": [
-                {
-                    "label": "Title",
-                    "name": "title",
-                    "type": "text",
-                    "placeholder": "my ticket...",
-                    "value": str(ticket.title.capitalize()) if ticket else None,
-                },
-                {
-                    "label": "Description",
-                    "name": "description",
-                    "type": "textarea",
-                    "hint": "Provide details of ticket",
-                    "value": str(ticket.description) if ticket else None,
+        # dialog = {
+        #     "callback_id": action_type,
+        #     "title": "Create ticket",
+        #     "submit_label": "Submit",
+        #     "notify_on_cancel": True,
+        #     "state": ticket.id if ticket else "Create ticket",
+        #     "elements": [
+        #         {
+        #             "label": "Title",
+        #             "name": "title",
+        #             "type": "text",
+        #             "placeholder": "my ticket...",
+        #             "value": str(ticket.title.capitalize()) if ticket else None,
+        #         },
+        #         {
+        #             "label": "Description",
+        #             "name": "description",
+        #             "type": "textarea",
+        #             "hint": "Provide details of ticket",
+        #             "value": str(ticket.description) if ticket else None,
+        #
+        #         },
+        #         {
+        #             "label": "Status",
+        #             "name": "status",
+        #             "type": "select",  # value to populated in editing
+        #             "value": str(ticket.status) if ticket else None,
+        #             "options": [
+        #                 {
+        #                     "label": "not started",
+        #                     "value": "not started"
+        #                 },
+        #                 {
+        #                     "label": "doing",
+        #                     "value": "doing"
+        #                 },
+        #                 {
+        #                     "label": "done",
+        #                     "value": "done"
+        #                 }
+        #             ]
+        #         },
+        #         {
+        #             "label": "Severity",
+        #             "name": "severity",
+        #             "type": "select",
+        #             "value": str(ticket.severity) if ticket else None,
+        #             "options": [
+        #                 {
+        #                     "label": "low",
+        #                     "value": "low"
+        #                 },
+        #                 {
+        #                     "label": "medium",
+        #                     "value": "medium"
+        #                 },
+        #                 {
+        #                     "label": "high",
+        #                     "value": "high"
+        #                 }
+        #             ]
+        #         }
+        #     ]
+        # }
 
+        view = {
+            "type": "modal",
+            "title": {
+                "type": "plain_text",
+                "text": "Ticket creation",
+                "emoji": True
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Submit",
+                "emoji": True
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel",
+                "emoji": True
+            },
+            "blocks": [
+                {
+                    "type": "divider"
                 },
                 {
-                    "label": "Status",
-                    "name": "status",
-                    "type": "select",  # value to populated in editing
-                    "value": str(ticket.status) if ticket else None,
-                    "options": [
-                        {
-                            "label": "not started",
-                            "value": "not started"
-                        },
-                        {
-                            "label": "doing",
-                            "value": "doing"
-                        },
-                        {
-                            "label": "done",
-                            "value": "done"
+                    "type": "input",
+                    "block_id": "title",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Ticket title"
+                    },
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "plain_input",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "name..."
                         }
-                    ]
+                    }
                 },
                 {
-                    "label": "Severity",
-                    "name": "severity",
-                    "type": "select",
-                    "value": str(ticket.severity) if ticket else None,
-                    "options": [
-                        {
-                            "label": "low",
-                            "value": "low"
-                        },
-                        {
-                            "label": "medium",
-                            "value": "medium"
-                        },
-                        {
-                            "label": "high",
-                            "value": "high"
+                    "type": "input",
+                    "block_id": "description",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Ticket description",
+                    },
+                    "element": {
+                        "type": "plain_text_input",
+                        "multiline": True,
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "description..."
                         }
-                    ]
+                    },
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "input",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Choose status level",
+                        "emoji": True
+                    },
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select status...",
+                            "emoji": True
+                        },
+                        "options": [
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "not started",
+                                    "emoji": True
+                                },
+                                "value": "not started"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "doing",
+                                    "emoji": True
+                                },
+                                "value": "doing"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "done",
+                                    "emoji": True
+                                },
+                                "value": "done"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "input",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Choose status level",
+                        "emoji": True
+                    },
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select status...",
+                            "emoji": True
+                        },
+                        "options": [
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "not started",
+                                    "emoji": True
+                                },
+                                "value": "not started"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "doing",
+                                    "emoji": True
+                                },
+                                "value": "doing"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "done",
+                                    "emoji": True
+                                },
+                                "value": "done"
+                            }
+                        ]
+                    }
                 }
             ]
         }
@@ -141,7 +284,7 @@ class Provider:
         data = {
             'token': self.token,
             'trigger_id': trigger_id,
-            'dialog': json.dumps(dialog)
+            'view': json.dumps(view)
         }
-        response = requests.post(self.URL_DIALOG_OPEN, data=data)
+        response = requests.post('https://slack.com/api/views.open', data=data)
         return json.loads(response.content)

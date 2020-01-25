@@ -63,6 +63,8 @@ def proceed_payload(request):
     data = request.POST
     data_dict = json.loads(data['payload'])
 
+    print(data)
+
     reporter = data_dict['user']['name']  # user name
 
     channel_id = data_dict['channel']['id']  # channel JSON
@@ -77,17 +79,12 @@ def proceed_payload(request):
         ticket_id = int(action_id[1:])
 
         ticket = Ticket.objects.get(id=ticket_id)
-        print(ticket)
 
         if type_action == 'E':
             a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket', ticket=ticket)
-        else:
-            a.send_message(
-                channel_id=channel_id,
-                text='Future delete'
-            )
-            return HttpResponse(status=200)
-
+        elif type_action == 'D':
+            print("I am here")
+            a.display_dialog_delete(data_dict['trigger_id'], action_type='delete_ticket', ticket=ticket)
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_cancellation':
