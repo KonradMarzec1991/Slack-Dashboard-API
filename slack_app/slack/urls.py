@@ -1,15 +1,19 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from .views import (
     display_dialog,
     proceed_payload,
     show_my_tickets,
-    display_information,
+    SlackInformationViewSet,
 )
+
+slack_router = DefaultRouter()
+slack_router.register('display_information', SlackInformationViewSet, base_name='slack_information')
 
 urlpatterns = [
     path('display_dialog/', display_dialog, name='display_dialog'),
-    path('display_information/', display_information, name='display_information '),
+    path('', include(slack_router.urls), name='slack_information'),
     path('proceed_payload/', proceed_payload, name='proceed_payload'),
     path('show_tickets/', show_my_tickets, name='show_tickets'),
 ]

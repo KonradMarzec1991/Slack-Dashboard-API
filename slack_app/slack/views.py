@@ -1,10 +1,14 @@
 from celery import shared_task
 
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 import requests
 import json
 
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 from tickets.models import Ticket, Namespace
 from .actions import Actions
 
@@ -12,18 +16,35 @@ from .actions import Actions
 URL_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
-@csrf_exempt
-def display_information(request):
-    channel_id = request.POST.get('channel_id')
-    actions = Actions(channel_id)
+class SlackInformationViewSet(ViewSet):
 
-    actions.send_message(
-        channel_id=channel_id,
-        blocks=json.dumps(
-            actions.slack_information()
+    permission_classes = (AllowAny, )
+
+    def create(self, request):
+        channel_id = request.POST['channel_id']
+        actions = Actions(channel_id)
+
+        actions.send_message(
+            channel_id=channel_id,
+            blocks=json.dumps(
+                actions.slack_information()
+            )
         )
-    )
-    return HttpResponse(status=200)
+        return Response(status=200)
+
+
+# @csrf_exempt
+# def display_information(request):
+#     channel_id = request.POST['channel_id']
+#     actions = Actions(channel_id)
+#
+#     actions.send_message(
+#         channel_id=channel_id,
+#         blocks=json.dumps(
+#             actions.slack_information()
+#         )
+#     )
+#     return HttpResponse(status=200)
 
 
 @csrf_exempt
