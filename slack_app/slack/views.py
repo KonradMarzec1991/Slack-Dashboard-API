@@ -91,11 +91,24 @@ def proceed_payload(request):
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_cancellation':
-        a.send_message(
-            channel_id=channel_id,
-            text='Creation of ticket has been cancelled'
-        )
-        return HttpResponse(status=200)
+
+        if data_dict['callback_id'] == 'edit_ticket':
+
+            ticket_id = data_dict['state']
+
+            a.send_message(
+                channel_id=channel_id,
+                text=f'*Modification* of `ticket {ticket_id}` has been cancelled.'
+            )
+            return HttpResponse(status=200)
+
+        elif data_dict['callback_id'] == 'create_ticket':
+
+            a.send_message(
+                channel_id=channel_id,
+                text='*Creation* of `ticket` has been cancelled.'
+            )
+            return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_submission':
 
