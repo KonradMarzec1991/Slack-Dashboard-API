@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 
+from rest_framework.routers import DefaultRouter
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
 from tickets.views import (
     TicketViewSet,
     NamespaceViewSet,
@@ -9,12 +14,6 @@ from tickets.views import (
 )
 
 from status.views import StatusViewSet
-
-from rest_framework.routers import DefaultRouter
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
 
 ticket_router = DefaultRouter()
 ticket_router.register(r'', TicketViewSet)

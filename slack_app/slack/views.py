@@ -8,6 +8,7 @@ import json
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+
 from tickets.models import Ticket, Namespace
 from .actions import Actions
 
@@ -48,18 +49,28 @@ class SlackTicketsListViewSet(ViewSet):
 
         }
         requests.post(a.URL_SEND_MESSAGE, data=data)
-        return HttpResponse(status=200)
+        return Response(status=200)
 
 
-@csrf_exempt
-def display_dialog(request):
-    request_data = request.POST
-    a = Actions(request_data['channel_id'])
-    content = a.display_dialog(request_data['trigger_id'], action_type='create_ticket')
+class SlackDialogViewSet(ViewSet):
 
-    if not content['ok']:
-        return HttpResponse('Something went wrong, please try again...')
-    return HttpResponse(status=200)
+    def create(self, request):
+        request_data = request.POST
+
+        channel_id = request_data['channel_id']
+        trigger_id = request_data['trigger_id']
+
+        a = Actions(channel_id)
+        content = a.display_dialog(
+            trigger_id=trigger_id,
+            action_type='create_ticket'
+        )
+
+        if not content['ok']:
+            return Response(
+                'Something went wrong, please try again...'
+            )
+        return Response(status=200)
 
 
 @csrf_exempt
@@ -67,8 +78,6 @@ def proceed_payload(request):
 
     data = request.POST
     data_dict = json.loads(data['payload'])
-
-    print(data_dict)
 
     reporter = data_dict['user']['name']  # user name
 
@@ -112,7 +121,7 @@ def proceed_payload(request):
 
             a.send_message(
                 channel_id=channel_id,
-                text=f'*Modification* of `ticket {ticket_id}` has been cancelled.'
+                text=f'*Modification* of `ticket id:{ticket_id}` has been cancelled.'
             )
             return HttpResponse(status=200)
 
@@ -181,7 +190,7 @@ def proceed_payload(request):
 
             a.send_message(
                 channel_id=channel_id,
-                text=f'`Ticket {ticket_id}` has been modified.'
+                text=f'`Ticket id:{ticket_id}` has been modified.'
             )
             return HttpResponse(status=200)
 
