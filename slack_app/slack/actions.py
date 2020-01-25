@@ -17,7 +17,7 @@ class Actions(Provider):
         text = []
         if not tickets.exists():
             text.append(self.tickets_main_section(
-                "*:star: You do not have tickets:star :*"))
+                "*:star: You do not have any tickets :star:*"))
         else:
             text.append(self.tickets_main_section(
                 "*:star: Your tickets: :star:*"))

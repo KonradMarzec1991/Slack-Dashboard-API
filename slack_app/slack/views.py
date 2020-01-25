@@ -60,10 +60,11 @@ def display_dialog(request):
 
 @csrf_exempt
 def proceed_payload(request):
+
     data = request.POST
     data_dict = json.loads(data['payload'])
 
-    print(data)
+    print(data_dict)
 
     reporter = data_dict['user']['name']  # user name
 
@@ -78,13 +79,25 @@ def proceed_payload(request):
         type_action = action_id[0]
         ticket_id = int(action_id[1:])
 
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            a.send_message(
+                channel_id=channel_id,
+                text=f'This ticket has been removed! Please refreash list with `\show_tickets`.'
+            )
+            return HttpResponse(status=200)
 
         if type_action == 'E':
             a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket', ticket=ticket)
         elif type_action == 'D':
-            print("I am here")
-            a.display_dialog_delete(data_dict['trigger_id'], action_type='delete_ticket', ticket=ticket)
+
+            ticket.delete()
+            a.send_message(
+                channel_id=channel_id,
+                text=f'Ticket {ticket_id} has been removed.'
+            )
+
         return HttpResponse(status=200)
 
     if data_dict['type'] == 'dialog_cancellation':
