@@ -3,14 +3,23 @@ Slack actions for interactions with db/server
 Overrides methods of provider to simplify using them
 """
 
+import json
 
-from .provider import Provider
+import requests
+from django.http import HttpResponse
+
+from .templates import Templates
 
 
-class Actions(Provider):
+class Actions(Templates):
+
+    URL_CHANNEL_NAME = 'https://slack.com/api/conversations.info'
+    URL_WORKSPACE_NAME = 'https://slack.com/api/team.info'
+    URL_SEND_MESSAGE = 'https://slack.com/api/chat.postMessage'
+    URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
 
     def __init__(self, channel_id):
-        super().__init__()
+        self.token = ''
         self.channel_id = channel_id
 
     def show_tickets(self, tickets):
@@ -27,116 +36,160 @@ class Actions(Provider):
                 text.append(self.ticket_divider())
         return text
 
-    @staticmethod
-    def slack_information():
-        template = \
-        [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Hey there* 👋 I'm TicketBot. I'm here to help you create and manage tickets in Slack.\n"
-                            "There are two commands to manage/create tasks:"
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*1️⃣ `/show_tickets` command*. "
-                            "Type `/show_tickets-tasks` to displays all your current unclosed tickets"
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*2️⃣ `/create` command*. "
-                            "Type `/create` to open dialog form and create ticket"
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": ":star: Have fun!!! :star:"
-                }
-            }
-        ]
-        return template
-
-    @staticmethod
-    def tickets_main_section(text):
-        template = \
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": text
-                }
-            }
-        return template
-
-    @staticmethod
-    def ticket_section(ticket):
-        template = \
-        {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Title:*\n{ticket.title.capitalize()}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Description:*\n{ticket.description}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Status:*\n{ticket.status}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Severity:*\n{ticket.severity}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Created at:*\n{ticket.created_at}"
-                }
-            ]
+    def get_channel(self, channel_id):
+        """
+        :param channel_id: channel ID from Slack API
+        :return: channel name (private channel)
+        """
+        data = {
+            'token': self.token,
+            'channel': channel_id
         }
-        return template
+        res = requests.post(self.URL_CHANNEL_NAME, data=data)
+        response = json.loads(res.content)
+        return response['channel']['name']
 
-    @staticmethod
-    def ticket_buttons(ticket_id):
-        template = \
-        {
-            "type": "actions",
+    def get_workspace(self, team_id):
+        """
+        :param team_id: team/workspace ID from Slack API
+        :return: workspace name
+        """
+        data = {
+            'token': self.token,
+            'team': team_id
+        }
+        res = requests.post(self.URL_WORKSPACE_NAME, data=data)
+        response = json.loads(res.content)
+        return response['team']['name']
+
+    def send_message(self, channel_id, text=None, blocks=None):
+        """
+        :param channel_id: channel ID from Slack API
+        :param text: message text
+        :param blocks: slack blocks for formatting message
+        :return: message to user via Slack
+        """
+        data = {
+            'token': self.token,
+            'channel': channel_id,
+            'text': text if text else None,
+            'blocks': blocks if blocks else None
+        }
+
+        response = requests.post(self.URL_SEND_MESSAGE, data=data)
+        return HttpResponse(status=200)
+
+    def display_dialog(self, trigger_id, action_type, ticket=None):
+        dialog = {
+            "callback_id": action_type,  # potentially checker if edit or create
+            "title": "Create ticket",
+            "submit_label": "Submit",
+            "notify_on_cancel": True,
+            "state": ticket.id if ticket else "Create todo",
             "elements": [
                 {
-                    "type": "button",
-                    "text": {
-                        "type": "plain_text",
-                        "emoji": True,
-                        "text": "Edit"
-                    },
-                    "style": "primary",
-                    "action_id": f'E{ticket_id}'
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "placeholder": "my ticket...",
+                    "value": str(ticket.title.capitalize()) if ticket else None,
                 },
                 {
-                    "type": "button",
-                    "text": {
-                        "type": "plain_text",
-                        "emoji": True,
-                        "text": "Delete"
-                    },
-                    "style": "danger",
-                    "action_id": f'D{ticket_id}'
+                    "label": "Description",
+                    "name": "description",
+                    "type": "textarea",
+                    "hint": "Provide details of ticket",
+                    "value": str(ticket.description) if ticket else None,
+
+                },
+                {
+                    "label": "Status",
+                    "name": "status",
+                    "type": "select",  # value to populated in editing
+                    "value": str(ticket.status) if ticket else None,
+                    "options": [
+                        {
+                            "label": "not started",
+                            "value": "not started"
+                        },
+                        {
+                            "label": "doing",
+                            "value": "doing"
+                        },
+                        {
+                            "label": "done",
+                            "value": "done"
+                        }
+                    ]
+                },
+                {
+                    "label": "Severity",
+                    "name": "severity",
+                    "type": "select",
+                    "value": str(ticket.severity) if ticket else None,
+                    "options": [
+                        {
+                            "label": "low",
+                            "value": "low"
+                        },
+                        {
+                            "label": "medium",
+                            "value": "medium"
+                        },
+                        {
+                            "label": "high",
+                            "value": "high"
+                        }
+                    ]
                 }
             ]
         }
-        return template
 
-    @staticmethod
-    def ticket_divider():
-        return {"type": "divider"}
+        data = {
+            'token': self.token,
+            'trigger_id': trigger_id,
+            'dialog': json.dumps(dialog)
+        }
+        response = requests.post(self.URL_DIALOG_OPEN, data=data)
+        return json.loads(response.content)
+
+    def display_dialog_delete(self, trigger_id, action_type, ticket=None):
+
+        view = {
+            "type": "modal",
+            "callback_id": action_type,
+            "private_metadata": str(ticket.id),
+            "title": {
+                "type": "plain_text",
+                "text": "Ticket removal",
+                "emoji": True
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Yes!",
+                "emoji": True
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "No",
+                "emoji": True
+            },
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": f"Are you sure you want to delete ticket {ticket.id}?",
+                        "emoji": True
+                    }
+                }
+            ]
+        }
+
+        data = {
+            'token': self.token,
+            'trigger_id': trigger_id,
+            'view': json.dumps(view)
+        }
+        response = requests.post('https://slack.com/api/views.open', data=data)
+        return json.loads(response.content)

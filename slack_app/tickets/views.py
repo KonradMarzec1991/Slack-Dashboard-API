@@ -59,11 +59,11 @@ class TicketViewSet(viewsets.ModelViewSet):
         channels = url_params.get('channel', None)
 
         return Ticket.objects.get_filtered_qs(
-            workspace,
-            channels,
-            q,
-            status,
-            severity
+            workspace=workspace,
+            channels=channels,
+            q=q,
+            status=status,
+            severity=severity
         )
 
     def list(self, request, *args, **kwargs):

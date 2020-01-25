@@ -6,7 +6,6 @@ import requests
 import json
 
 from tickets.models import Ticket, Namespace
-from .provider import Provider
 from .actions import Actions
 
 
@@ -95,7 +94,7 @@ def proceed_payload(request):
             ticket.delete()
             a.send_message(
                 channel_id=channel_id,
-                text=f'Ticket {ticket_id} has been removed.'
+                text=f'`Ticket {ticket_id}` has been removed.'
             )
 
         return HttpResponse(status=200)
@@ -177,7 +176,7 @@ def proceed_payload(request):
 
             a.send_message(
                 channel_id=channel_id,
-                text=f'Ticket id {ticket_id} has been modified'
+                text=f'`Ticket {ticket_id}` has been modified.'
             )
             return HttpResponse(status=200)
 
@@ -186,9 +185,9 @@ def proceed_payload(request):
 def create_ticket(ticket_data, response_url):
 
     Ticket.objects.create(**ticket_data)
-    p = Provider()
+    a = Actions()
     data = json.dumps({
-        'token': p.token,
+        'token': a.token,
         'text': 'Ticket has been created'
     })
 
