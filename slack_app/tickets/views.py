@@ -60,7 +60,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         return Ticket.objects.get_filtered_qs(
             workspace=workspace,
-            channels=channels,
+            channel=channels,
             q=q,
             status=status,
             severity=severity

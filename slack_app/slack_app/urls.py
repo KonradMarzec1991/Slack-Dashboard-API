@@ -25,7 +25,7 @@ namespace_router = DefaultRouter()
 namespace_router.register(r'', NamespaceViewSet)
 
 status_router = DefaultRouter()
-status_router.register(r'', StatusViewSet, base_name='status_view_set')
+status_router.register(r'', StatusViewSet, basename='status_view_set')
 
 # swagger documentation
 schema_view = get_schema_view(

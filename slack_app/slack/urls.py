@@ -10,11 +10,11 @@ from .views import (
 
 slack_router = DefaultRouter()
 slack_router.register('display_information', SlackInformationViewSet,
-                      base_name='slack_information')
+                      basename='slack_information')
 slack_router.register('show_tickets', SlackTicketsListViewSet,
-                      base_name='slack_show_tickets')
+                      basename='slack_show_tickets')
 slack_router.register('display_dialog', SlackDialogViewSet,
-                      base_name='display_dialog')
+                      basename='display_dialog')
 
 urlpatterns = [
     path('', include(slack_router.urls), name='slack_information'),
