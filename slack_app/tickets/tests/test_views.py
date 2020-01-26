@@ -3,12 +3,33 @@ from tickets.models import Ticket, Namespace
 
 
 @pytest.mark.django_db
-class TestExperiment(object):
+class TestExperiment:
 
     @pytest.fixture(autouse=True)
     def setup_stuff(self, db):
-        namespace = Namespace.objects.create(name='teamwork')
-        Ticket.objects.create(title="hahahah", description="asfasfga", status="doing", severity="low", reporter="marzec", namespace=namespace)
+
+        for name in ['teamwork', 'singlework', 'multiwork']:
+            Namespace.objects.create(name=name)
+
+        qs = [
+            {
+                'title': 'ticket_1',
+                'description': 'some description',
+                'status': 'doing',
+                'severity': 'low',
+                'namespace_id': 1,
+                'reporter': 'k.marzec',
+                'data': {
+                    'channels': 'controlling',
+                    'workspace': 'finance'
+                }
+            }
+        ]
+
+        for ticket_data in qs:
+            Ticket.objects.create(**ticket_data)
+
 
     def test_something(self):
-        assert Ticket.objects.filter(title="hahahah").exists()
+        assert Namespace.objects.count() == 3
+        assert Ticket.objects.count() == 1
