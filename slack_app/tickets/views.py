@@ -85,3 +85,5 @@ class NamespaceViewSet(viewsets.ModelViewSet):
     # pylint: disable=too-many-ancestors
     serializer_class = NamespaceSerializer
     queryset = Namespace.objects.all()
+
+    lookup_field = 'pk'

@@ -30,5 +30,5 @@ class TicketSerializer(serializers.ModelSerializer):
 class NamespaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Namespace
-        fields = ['name']
+        fields = ['id', 'name']
 

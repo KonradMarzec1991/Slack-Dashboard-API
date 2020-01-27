@@ -1,27 +1,38 @@
 import pytest
-from rest_framework.test import APIClient
-from tickets.models import Ticket, Namespace
+from rest_framework.test import APIClient, APIRequestFactory
+from tickets.views import NamespaceViewSet
+from rest_framework import status
 
 
-@pytest.mark.django_db(transaction=True)
-class TestExperiment:
+@pytest.mark.django_db(reset_sequences=True)
+class TestNamespaceView:
 
-    def get_client(self, url=None):
-        client = APIClient()
-        if url is None:
-            response = client.get('/tickets/')
-        else:
-            response = client.get(f'/tickets/?{url}')
-        return response
+    def test_list_view(self, namespaces):
 
-    def test_namespace_view(self, tickets):
-        client = APIClient()
-        response = client.get('/namespace/')
-        assert response.status_code == 200
-        assert len(response.json()) == 3
+        def _get(path, view_type):
+            request = APIRequestFactory().get(path)
+            view = NamespaceViewSet.as_view({'get': view_type})
+            return view(request)
 
-    # def test_ticket_view_no_params(self, namespaces, tickets):
-    #     client = self.get_client()
+        response = _get('/namespace/', 'list')
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 3
+
+    def test_retrieve_view(self, namespaces):
+        response = APIClient().get('/namespace/1/')
+        assert response.status_code == status.HTTP_200_OK
+        print(response.data)
+        assert response.data.get('name') == 'teamwork'
+
+
+
+
+
+
+
+
+
+
 
 
 
