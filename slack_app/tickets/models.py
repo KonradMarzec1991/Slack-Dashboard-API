@@ -23,8 +23,17 @@ class TicketManager(models.Manager):
         2) Workspace and channel hierarchy - dictionary of workspaces with
         unique channels within
     """
-    def get_filtered_qs(self, workspace=None, channel=None, q=None, status=None, severity=None):
+    def get_filtered_qs(self,
+                        workspace=None,
+                        channel=None,
+                        q=None,
+                        status=None,
+                        severity=None,
+                        namespace_id=None):
         qs = self.get_queryset()
+
+        if namespace_id:
+            qs = qs.filter(namespace=namespace_id)
 
         if workspace:
             qs = qs.filter(data__workspace=workspace)

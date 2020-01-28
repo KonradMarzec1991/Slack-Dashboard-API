@@ -63,7 +63,8 @@ class TicketViewSet(viewsets.ModelViewSet):
             channel=channels,
             q=q,
             status=status,
-            severity=severity
+            severity=severity,
+            namespace_id=self.kwargs['namespace_pk']
         )
 
     def list(self, request, *args, **kwargs):
