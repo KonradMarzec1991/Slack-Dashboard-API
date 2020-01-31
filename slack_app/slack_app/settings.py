@@ -156,8 +156,8 @@ DEBUG_LOG_LEVEL = 'DEBUG'
 
 _COMMON_LOG_LEVEL = DEBUG_LOG_LEVEL if DEBUG else PROD_LOG_LEVEL
 
-LOG_DIR = os.path.join(os.path.dirname(BASE_DIR), 'ticket_logs')
-LOG_FILE_NAME = 'TICKETS.log'
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+LOG_FILE_NAME = 'tickets.log'
 
 LOG_FILE_SIZE = 16  # MB
 LOG_FILE_BACKUPS = 1
