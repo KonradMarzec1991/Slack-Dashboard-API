@@ -12,12 +12,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
-
-COMMIT = os.getenv('COMMIT', '2874#952')
-VERSION = os.getenv('VERSION', '1.0.0')
-
-URL_PREFIX = 'api/'
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -145,6 +139,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+COMMIT = os.getenv('COMMIT', '2874#952')
+VERSION = os.getenv('VERSION', '1.0.0')
+
+URL_PREFIX = 'api/'
+
 CELERY_BROKER_URL = 'redis://localhost:6360'
 CELERY_RESULT_BACKEND = 'redis://localhost:6360'
 CELERY_ACCEPT_CONTENT = ['application/json']
@@ -160,8 +159,95 @@ _COMMON_LOG_LEVEL = DEBUG_LOG_LEVEL if DEBUG else PROD_LOG_LEVEL
 LOG_DIR = os.path.join(os.path.dirname(BASE_DIR), 'ticket_logs')
 LOG_FILE_NAME = 'TICKETS.log'
 
-LOG_FILE_SIZE = 16  #MB
+LOG_FILE_SIZE = 16  # MB
 LOG_FILE_BACKUPS = 1
 
 COMMON_LOG_HANDLERS = ('console', 'file')
 
+
+def downgrade_info_to_debug(record):
+    import logging
+    if record.levelno == logging.INFO:
+        record.levelno = logging.DEBUG
+        record.levelname = 'DEBUG'
+    return True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'long': {
+            'format': '[%(levelname)s][%(asctime)s][%(name)s]%(message)s'
+        },
+        'short': {
+            'format': '[%(levelno)s][%(asctime)s][%(name)s]%(message)s'
+        }
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'downgrade_info_to_debug': {
+            '()': lambda: downgrade_info_to_debug,
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler'
+        },
+        'file': {
+            'level': _COMMON_LOG_LEVEL,
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'long',
+            'filename': os.path.join(LOG_DIR, LOG_FILE_NAME),
+            'encoding': 'UTF-8',
+            'maxBytes': LOG_FILE_SIZE * 1024 * 1024,
+            'backupCount': LOG_FILE_BACKUPS,
+            'delay': True
+        },
+        'console': {
+            'level': _COMMON_LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'short'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': COMMON_LOG_HANDLERS,
+            'level': 'WARNING',
+            'propagate': False
+        },
+        'django.request': {
+            'level': 'WARNING' if DEBUG else 'ERROR',
+            'handlers': COMMON_LOG_HANDLERS,
+            'propagate': False
+        },
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': COMMON_LOG_HANDLERS,
+            'propagate': False
+        },
+        'py.warnings': {
+            'handlers':COMMON_LOG_HANDLERS if DEBUG else []
+        },
+        'server': {
+            'level': _COMMON_LOG_LEVEL,
+            'handlers': COMMON_LOG_HANDLERS,
+            'propagate': False
+        }
+    },
+}
+
+# SET LOGGING SETTINGS to each APP
+MY_LOGGERS = dict()
+for app in MY_APPS:
+    MY_LOGGERS[app] = {
+        'level': _COMMON_LOG_LEVEL,
+        'handlers': COMMON_LOG_HANDLERS
+    }
+LOGGING['loggers'].update(MY_LOGGERS)
