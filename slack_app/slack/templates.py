@@ -14,8 +14,10 @@ class Templates:
                     "text": {
                         "type": "mrkdwn",
                         "text": "*Hey there* 👋 I'm TicketBot. "
-                                "I'm here to help you create and manage tickets in Slack.\n"
-                                "There are two commands to manage/create tasks:"
+                                "I'm here to help you create and "
+                                "manage tickets in Slack.\n"
+                                "There are two commands "
+                                "to manage/create tasks:"
                     }
                 },
                 {
@@ -23,7 +25,8 @@ class Templates:
                     "text": {
                         "type": "mrkdwn",
                         "text": "*1️⃣ `/show_tickets` command*. "
-                                "Type `/show_tickets-tasks` to displays all your current unclosed tickets"
+                                "Type `/show_tickets-tasks` to displays all"
+                                " your current unclosed tickets"
                     }
                 },
                 {
@@ -31,7 +34,8 @@ class Templates:
                     "text": {
                         "type": "mrkdwn",
                         "text": "*2️⃣ `/create` command*. "
-                                "Type `/create` to open dialog form and create ticket"
+                                "Type `/create` to open dialog "
+                                "form and create ticket"
                     }
                 },
                 {
