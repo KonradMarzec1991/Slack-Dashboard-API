@@ -156,7 +156,7 @@ DEBUG_LOG_LEVEL = 'DEBUG'
 
 _COMMON_LOG_LEVEL = DEBUG_LOG_LEVEL if DEBUG else PROD_LOG_LEVEL
 
-LOG_DIR = os.path.join(BASE_DIR, 'logs')
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
 LOG_FILE_NAME = 'tickets.log'
 
 LOG_FILE_SIZE = 16  # MB
@@ -202,7 +202,7 @@ LOGGING = {
         },
         'file': {
             'level': _COMMON_LOG_LEVEL,
-            'class': 'logging.handlers.RotatingFileHandler',
+            'class': 'slack_app.handlers.MakeFileHandler',
             'formatter': 'long',
             'filename': os.path.join(LOG_DIR, LOG_FILE_NAME),
             'encoding': 'UTF-8',

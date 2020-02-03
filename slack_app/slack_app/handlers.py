@@ -13,6 +13,5 @@ class MakeFileHandler(RotatingFileHandler):
         RotatingFileHandler.__init__(self, *args, **kwargs)
 
     def emit(self, record):
-        print(self.baseFilename)
-        create_logging_directory(self.baseFilename)
+        create_logging_directory(os.path.dirname(self.baseFilename))
         super().emit(record)
