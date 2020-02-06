@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'celery'
 ]
 
 MY_APPS = [
@@ -144,8 +145,9 @@ VERSION = os.getenv('VERSION', '1.0.0')
 
 URL_PREFIX = 'api/'
 
-CELERY_BROKER_URL = 'redis://localhost:6360'
-CELERY_RESULT_BACKEND = 'redis://localhost:6360'
+CELERY_BROKER_URL = 'redis://rd01:6379/0'
+CELERY_RESULT_BACKEND = 'redis://rd01:6379/0'
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
@@ -233,7 +235,7 @@ LOGGING = {
             'propagate': False
         },
         'py.warnings': {
-            'handlers':COMMON_LOG_HANDLERS if DEBUG else []
+            'handlers': COMMON_LOG_HANDLERS if DEBUG else []
         },
         'server': {
             'level': _COMMON_LOG_LEVEL,

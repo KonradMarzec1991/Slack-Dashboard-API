@@ -1,7 +1,6 @@
 FROM python:3.7.2
 
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /code
 
 COPY ./requirements.txt /code/
 

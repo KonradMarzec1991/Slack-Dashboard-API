@@ -11,10 +11,8 @@ then
     echo "PostgreSQL started"
 fi
 
-python /code/manage.py makemigrations
-python /code/manage.py migrate
-
-python /code/manage.py loaddata /code/fixtures/namespace.json
-python /code/manage.py loaddata /code/fixtures/tickets.json
-
-python /code/manage.py runserver 0.0.0.0:8000
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata fixtures/namespace.json
+python manage.py loaddata fixtures/tickets
+python manage.py runserver 0.0.0.0:8000
