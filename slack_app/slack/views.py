@@ -65,7 +65,6 @@ class SlackDialogViewSet(ViewSet):
             trigger_id=trigger_id,
             action_type='create_ticket'
         )
-
         if not content['ok']:
             return Response(
                 'Something went wrong, please try again...'
@@ -97,14 +96,16 @@ def proceed_payload(request):
         except Ticket.DoesNotExist:
             a.send_message(
                 channel_id=channel_id,
-                text=f'This ticket has been removed! Please refreash list with `\show_tickets`.'
+                text=f'This ticket has been removed! '
+                     f'Please refreash list with `\show_tickets`'
             )
             return HttpResponse(status=200)
 
         if type_action == 'E':
-            a.display_dialog(data_dict['trigger_id'], action_type='edit_ticket', ticket=ticket)
+            a.display_dialog(data_dict['trigger_id'],
+                             action_type='edit_ticket',
+                             ticket=ticket)
         elif type_action == 'D':
-
             ticket.delete()
             a.send_message(
                 channel_id=channel_id,

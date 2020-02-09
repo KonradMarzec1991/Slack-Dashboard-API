@@ -81,7 +81,7 @@ class Actions(Templates):
 
     def display_dialog(self, trigger_id, action_type, ticket=None):
         dialog = {
-            "callback_id": action_type,  # potentially checker if edit or create
+            "callback_id": action_type,
             "title": "Create ticket",
             "submit_label": "Submit",
             "notify_on_cancel": True,
@@ -154,7 +154,6 @@ class Actions(Templates):
         return json.loads(response.content)
 
     def display_dialog_delete(self, trigger_id, action_type, ticket=None):
-
         view = {
             "type": "modal",
             "callback_id": action_type,
@@ -179,7 +178,8 @@ class Actions(Templates):
                     "type": "section",
                     "text": {
                         "type": "plain_text",
-                        "text": f"Are you sure you want to delete ticket {ticket.id}?",
+                        "text": f"Are you sure you want to delete "
+                                f"ticket {ticket.id}?",
                         "emoji": True
                     }
                 }
