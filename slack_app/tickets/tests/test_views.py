@@ -43,13 +43,15 @@ class TestNamespaceView:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data == {'id': 4, 'name': 'chernobyl'}
 
-    def test_put(self):
+    def test_update(self):
+        # this case is unique because namespace has only one attr name
+        # testing put / patch is the same in this one case
         response = self.client().put('/namespaces/1/', {'name': 'chernobyl'})
         assert response.status_code == status.HTTP_200_OK
         chernobyl = Namespace.objects.get(pk=1)
         assert chernobyl.name == 'chernobyl'
 
-    def test_delete(self):
+    def test_destroy(self):
         response = self.client().delete('/namespaces/1/')
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -118,12 +120,28 @@ class TestNamespaceTicketView:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data == {'id': 12, **test_ticket}
 
-    def test_put(self):
-        pass
+    def test_partial_update(self):
+        response = APIClient().patch(
+            f'/namespaces/1/tickets/1/',
+            {'title': 'PItitle'}
+        )
 
-    def test_delete(self):
-        pass
+        assert response.status_code == status.HTTP_200_OK
 
+    @pytest.mark.parametrize(
+        'namespace_id, ticket_id, h_status',
+        [
+            (1, 1, status.HTTP_204_NO_CONTENT),
+            (1, 2, status.HTTP_204_NO_CONTENT),
+            (2, 3, status.HTTP_204_NO_CONTENT),
+        ]
+    )
+    def test_destroy(self, namespace_id, ticket_id, h_status):
+        response = self.client().delete(
+            f'/namespaces/{namespace_id}/tickets/{ticket_id}/'
+        )
+
+        assert response.status_code == h_status
 
 
 
