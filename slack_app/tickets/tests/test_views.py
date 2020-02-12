@@ -27,19 +27,16 @@ class TestNamespaceView:
             return view(request)
 
         response = _get('/namespaces/', 'list')
-
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 3
 
     def test_retrieve(self):
         response = self.client().get('/namespaces/1/')
-
         assert response.status_code == status.HTTP_200_OK
         assert response.data.get('name') == 'teamwork'
 
     def test_post(self):
         response = self.client().post('/namespaces/', {'name': 'chernobyl'})
-
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data == {'id': 4, 'name': 'chernobyl'}
 
@@ -53,7 +50,6 @@ class TestNamespaceView:
 
     def test_destroy(self):
         response = self.client().delete('/namespaces/1/')
-
         assert response.status_code == status.HTTP_204_NO_CONTENT
         assert len(Namespace.objects.all()) == 2
 
@@ -75,7 +71,6 @@ class TestNamespaceTicketView:
     )
     def test_list(self, namespace_id, num_of_tickets, num_of_pages, h_status):
         response = self.client().get(f'/namespaces/{namespace_id}/tickets/')
-
         assert response.status_code == h_status
         assert response.data['list']['num_of_tickets'] == num_of_tickets
         assert response.data['list']['num_of_pages'] == num_of_pages
@@ -95,7 +90,6 @@ class TestNamespaceTicketView:
         response = self.client().get(
             f'/namespaces/{namespace_id}/tickets/{ticket_id}/'
         )
-
         assert response.status_code == h_status
 
     def test_post(self):
@@ -116,7 +110,6 @@ class TestNamespaceTicketView:
             f'/namespaces/1/tickets/', {**test_ticket}, format='json')
         view = TicketViewSet.as_view({'post': 'create'})
         response = view(request)
-
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data == {'id': 12, **test_ticket}
 
@@ -125,7 +118,6 @@ class TestNamespaceTicketView:
             f'/namespaces/1/tickets/1/',
             {'title': 'PItitle'}
         )
-
         assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.parametrize(
@@ -140,7 +132,6 @@ class TestNamespaceTicketView:
         response = self.client().delete(
             f'/namespaces/{namespace_id}/tickets/{ticket_id}/'
         )
-
         assert response.status_code == h_status
 
 

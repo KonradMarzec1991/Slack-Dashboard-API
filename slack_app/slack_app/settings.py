@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
-    'celery'
+    'celery',
+    'corsheaders'
 ]
 
 MY_APPS = [
@@ -50,6 +51,7 @@ MY_APPS = [
 INSTALLED_APPS += MY_APPS
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -253,3 +255,6 @@ for app in MY_APPS:
         'handlers': COMMON_LOG_HANDLERS
     }
 LOGGING['loggers'].update(MY_LOGGERS)
+
+
+CORS_ORIGIN_WHITELIST = ("http://localhost:3000", )
