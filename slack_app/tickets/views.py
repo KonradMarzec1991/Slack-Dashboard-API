@@ -2,7 +2,7 @@
 """
 Main ticket API views for filtering and displaying all tickets in db
 """
-
+from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -17,6 +17,10 @@ from .models import (
 )
 
 from .pagination import TicketPagination
+
+
+def index(request):
+    return render(request, 'index.html')
 
 
 class SingleTicketViewSet(viewsets.ModelViewSet):

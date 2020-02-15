@@ -11,7 +11,8 @@ from drf_yasg import openapi
 from tickets.views import (
     TicketViewSet,
     NamespaceViewSet,
-    SingleTicketViewSet
+    SingleTicketViewSet,
+    index
 )
 
 from status.views import StatusViewSet
@@ -41,6 +42,8 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('index/', index),
+
     path('swagger/',
          schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
