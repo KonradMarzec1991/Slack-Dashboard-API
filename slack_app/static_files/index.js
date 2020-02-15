@@ -1,7 +1,3 @@
-const start = document.getElementById('start');
-start.innerText = 'start';
-
-
 const getJSON = () => {
     let p = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();

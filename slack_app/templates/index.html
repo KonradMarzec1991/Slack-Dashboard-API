@@ -3,10 +3,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
     <title>Slack tickets Dashboard</title>
 </head>
 <body>
-<p id="start"></p>
+
+<nav class="navigation">
+    <div class="navigation-header">
+        <h1 class="navigation-heading">Slack Dashboard</h1>
+
+        <form action="" class="navigation-search">
+            <input type="text"
+                   class="navigation-search-input"
+                   placeholder="Search..."
+            >
+            <button class="navigation-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <ul class="navigation-list">
+            <li class="navigation-item">
+                <a href="#" class="navigation-link">Workspace 1</a>
+            </li>
+            <li class="navigation-item">
+                <a href="#" class="navigation-link">Workspace 2</a>
+            </li>
+            <li class="navigation-item">
+                <a href="#" class="navigation-link">Workspace 3</a>
+            </li>
+        </ul>
+
+        <div class="copyright">
+            <p>&copy; 2020 Konrad Marzec</p>
+        </div>
+
+    </div>
+</nav>
 
 <script src="{% static 'index.js' %}"></script>
 </body>
