@@ -66,7 +66,9 @@ ROOT_URLCONF = 'slack_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,12 +87,6 @@ WSGI_APPLICATION = 'slack_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -141,6 +137,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static_files')
+]
 
 COMMIT = os.getenv('COMMIT', '2874#952')
 VERSION = os.getenv('VERSION', '1.0.0')
@@ -255,6 +255,3 @@ for app in MY_APPS:
         'handlers': COMMON_LOG_HANDLERS
     }
 LOGGING['loggers'].update(MY_LOGGERS)
-
-
-CORS_ORIGIN_WHITELIST = ("http://localhost:3000", )
