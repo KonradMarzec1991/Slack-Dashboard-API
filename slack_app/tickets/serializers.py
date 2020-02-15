@@ -4,14 +4,16 @@ from .models import Ticket, Namespace
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    namespace = serializers.SerializerMethodField()
+    namespace = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Namespace.objects.all()
+    )
 
     class Meta:
         model = Ticket
         fields = [
             'id', 'title', 'description',
-            'status', 'severity', 'reporter',
-            'data', 'namespace_id', 'namespace'
+            'status', 'severity', 'reporter', 'data', 'namespace'
         ]
         extra_kwargs = {
             'status': {
@@ -26,9 +28,6 @@ class TicketSerializer(serializers.ModelSerializer):
                     "Valid data json should contain workspace and channel"
             }
         }
-
-    def get_namespace(self, obj):
-        return obj.namespace_id.name
 
 
 class NamespaceSerializer(serializers.ModelSerializer):

@@ -48,8 +48,6 @@ class TicketViewSet(viewsets.ModelViewSet):
         View method to return queryset filtered with url params
         :return: queryset filtered with url params
         """
-
-        print(self.kwargs)
         url_params = self.request.query_params
 
         q = url_params.get('q', None)

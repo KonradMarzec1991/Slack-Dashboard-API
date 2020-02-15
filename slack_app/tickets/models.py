@@ -33,7 +33,8 @@ class TicketManager(models.Manager):
         qs = self.get_queryset()
 
         if namespace_id:
-            qs = qs.filter(namespace_id=namespace_id)
+            qs = qs.filter(namespace=namespace_id)
+
         if workspace:
             qs = qs.filter(data__workspace=workspace)
         if channel:
@@ -91,7 +92,7 @@ class Ticket(models.Model):
         (HIGH, 'high')
     )
 
-    namespace_id = models.ForeignKey(
+    namespace = models.ForeignKey(
         'Namespace',
         on_delete=models.CASCADE)
 
