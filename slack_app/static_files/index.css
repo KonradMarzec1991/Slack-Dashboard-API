@@ -127,7 +127,7 @@ body {
 
 .navigation-link:before {
     content: '';
-    width: 0rem;
+    width: 0;
     height: .1rem;
     background-color: #0f0f0f;
     position: absolute;
@@ -138,7 +138,7 @@ body {
 
 .navigation-link:after {
     content: '';
-    width: 0rem;
+    width: 0;
     height: .1rem;
     background-color: #0f0f0f;
     position: absolute;
@@ -168,6 +168,16 @@ body {
 }
 
 .checkbox:checked ~ .sidebar .line-1 {
-    transform: rotate(-405deg);
+    transform: rotate(-405deg) translate(0px, 0px);
+    width: 2.5rem;
+}
+
+.checkbox:checked ~ .sidebar .line-2 {
+    opacity: 0;
+}
+
+.checkbox:checked ~ .sidebar .line-3 {
+    transform: rotate(405deg) translate(0px, 0px);
+    width: 2.5rem;
 }
 /* end of navigation */
