@@ -13,7 +13,7 @@ body {
 
 /* navigation */
 .navigation {
-    margin-left: 3rem;
+    margin-left: 4rem;
     position: fixed;
     width: 25rem;
     height: 100%;
@@ -26,10 +26,11 @@ body {
 
 .navigation-search {
     position: relative;
+    margin-bottom: 2rem;
 }
 
 .navigation-heading {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 500;
     letter-spacing: .2rem;
     color: #fff;
@@ -37,7 +38,7 @@ body {
 }
 
 .navigation-search-input {
-    width: 15rem;
+    width: 18rem;
     padding: .5rem 1rem;
     background-color: rgba(0, 0, 0, .8);
     font-size: 1rem;
@@ -70,6 +71,62 @@ body {
 
 .navigation-list {
     list-style: none;
+    padding: 0;
+    height: 54rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navigation-link {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.navigation-item {
+    position: relative;
+    margin: .3rem;
+}
+
+.navigation-link:before {
+    content: '';
+    width: 0rem;
+    height: .1rem;
+    background-color: #0f0f0f;
+    position: absolute;
+    top: .8rem;
+    left: -2.5rem;
+    transition: width .5s cubic-bezier(1, 0, 0, 1);
+}
+
+.navigation-link:after {
+    content: '';
+    width: 0rem;
+    height: .1rem;
+    background-color: #0f0f0f;
+    position: absolute;
+    top: .8rem;
+    right: -2.5rem;
+    transition: width .5s cubic-bezier(1, 0, 0, 1);
+}
+
+.navigation-link:hover {
+    color: #0f0f0f;
+}
+
+.navigation-link:hover::before,
+.navigation-link:hover::after {
+    width: 2rem;
+}
+
+.copyright {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    text-align: center;
 }
 
 /* end of navigation */
