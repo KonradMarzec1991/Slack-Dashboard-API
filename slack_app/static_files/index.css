@@ -17,11 +17,13 @@ body {
     height: 100%;
     background-color: #eee;
     position: fixed;
+    z-index: 10;
 }
 
 .menu-icon {
     margin-top: 2.5rem;
     margin-left: 1.2rem;
+    cursor: pointer;
 }
 
 .line {
@@ -33,7 +35,7 @@ body {
 
 .line-1, .line-3 {
     width: 1.8rem;
-    transition: width .3s;
+    transition: all .3s;
 }
 
 .menu-icon:hover .line {
@@ -44,8 +46,8 @@ body {
 
 /* navigation */
 .navigation {
-    margin-left: 5rem;
     position: fixed;
+    left: -20rem;
     width: 25rem;
     height: 100%;
     display: flex;
@@ -53,6 +55,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #1f69c0;
+    transition: left .6s cubic-bezier(1, 0, 0, 1);
 }
 
 .navigation-search {
@@ -158,5 +161,13 @@ body {
     font-size: 1.2rem;
     margin-top: 1rem;
     text-align: center;
+}
+
+.checkbox:checked ~ .navigation {
+    left: 5rem;
+}
+
+.checkbox:checked ~ .sidebar .line-1 {
+    transform: rotate(-405deg);
 }
 /* end of navigation */

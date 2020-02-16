@@ -12,52 +12,60 @@
 </head>
 <body>
 
-<!--sidebar -->
+<!--navbar -->
 <div class="navbar">
+
+    <input type="checkbox" class="checkbox" id="click">
+
+    <!--sidebar -->
     <div class="sidebar">
-        <div class="menu-icon">
-            <div class="line line-1"></div>
-            <div class="line line-2"></div>
-            <div class="line line-3"></div>
-        </div>
+        <label for="click">
+            <div class="menu-icon">
+                <div class="line line-1"></div>
+                <div class="line line-2"></div>
+                <div class="line line-3"></div>
+            </div>
+        </label>
     </div>
+    <!--end of sidebar -->
+
+    <!--navigation -->
+    <nav class="navigation">
+        <div class="navigation-header">
+            <h1 class="navigation-heading">Slack Dashboard</h1>
+
+            <form action="" class="navigation-search">
+                <input type="text"
+                       class="navigation-search-input"
+                       placeholder="Search..."
+                >
+                <button class="navigation-search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <ul class="navigation-list">
+                <li class="navigation-item">
+                    <a href="#" class="navigation-link">Pysio</a>
+                </li>
+                <li class="navigation-item">
+                    <a href="#" class="navigation-link">Konri</a>
+                </li>
+                <li class="navigation-item">
+                    <a href="#" class="navigation-link">Rikon</a>
+                </li>
+            </ul>
+
+            <div class="copyright">
+                <p>&copy; 2020 Konrad Marzec</p>
+            </div>
+
+        </div>
+    </nav>
+    <!--end of navigation -->
+
 </div>
-<!--end of sidebar -->
-
-<!--navigation -->
-<nav class="navigation">
-    <div class="navigation-header">
-        <h1 class="navigation-heading">Slack Dashboard</h1>
-
-        <form action="" class="navigation-search">
-            <input type="text"
-                   class="navigation-search-input"
-                   placeholder="Search..."
-            >
-            <button class="navigation-search-btn">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-
-        <ul class="navigation-list">
-            <li class="navigation-item">
-                <a href="#" class="navigation-link">Pysio</a>
-            </li>
-            <li class="navigation-item">
-                <a href="#" class="navigation-link">Konri</a>
-            </li>
-            <li class="navigation-item">
-                <a href="#" class="navigation-link">Rikon</a>
-            </li>
-        </ul>
-
-        <div class="copyright">
-            <p>&copy; 2020 Konrad Marzec</p>
-        </div>
-
-    </div>
-</nav>
-<!--end of navigation -->
+<!--end of navbar -->
 
 <script src="{% static 'index.js' %}"></script>
 </body>
