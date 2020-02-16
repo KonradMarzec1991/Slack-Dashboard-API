@@ -35,7 +35,7 @@ body {
 
 .line-1, .line-3 {
     width: 1.8rem;
-    transition: all .3s;
+    transition: all .4s;
 }
 
 .menu-icon:hover .line {
@@ -64,11 +64,12 @@ body {
 }
 
 .navigation-heading {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
     font-weight: 500;
     letter-spacing: .2rem;
     color: #fff;
     text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .navigation-search-input {
@@ -106,7 +107,7 @@ body {
 .navigation-list {
     list-style: none;
     padding: 0;
-    height: 54rem;
+    height: 57rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -168,7 +169,7 @@ body {
 }
 
 .checkbox:checked ~ .sidebar .line-1 {
-    transform: rotate(-405deg) translate(0px, 0px);
+    transform: rotate(-405deg) translate(-6px, 5px);
     width: 2.5rem;
 }
 
@@ -177,7 +178,7 @@ body {
 }
 
 .checkbox:checked ~ .sidebar .line-3 {
-    transform: rotate(405deg) translate(0px, 0px);
+    transform: rotate(405deg) translate(-10px, -10px);
     width: 2.5rem;
 }
 /* end of navigation */
