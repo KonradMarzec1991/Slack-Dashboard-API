@@ -3,70 +3,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Grand Hotel</title>
+
+     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
           integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
           crossorigin="anonymous">
+
     <link rel="stylesheet" href="{% static 'index.css' %}">
-    <title>Slack tickets Dashboard</title>
 </head>
 <body>
 
-<!--navbar -->
-<div class="navbar">
-
-    <input type="checkbox" class="checkbox" id="click" hidden>
-
-    <!--sidebar -->
-    <div class="sidebar">
-        <label for="click">
-            <div class="menu-icon">
+    <nav>
+         <div class="main">
+             <div class="menu-icon">
                 <div class="line line-1"></div>
                 <div class="line line-2"></div>
                 <div class="line line-3"></div>
             </div>
-        </label>
-    </div>
-    <!--end of sidebar -->
 
-    <!--navigation -->
-    <nav class="navigation">
-        <div class="navigation-header">
-            <h1 class="navigation-heading">Slack tickets Dashboard</h1>
+             <div></div>
 
-            <form action="" class="navigation-search">
-                <input type="text"
-                       class="navigation-search-input"
-                       placeholder="Search..."
-                >
-                <button class="navigation-search-btn">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-
-            <ul class="navigation-list">
-                <li class="navigation-item">
-                    <a href="#" class="navigation-link">Pysio</a>
-                </li>
-                <li class="navigation-item">
-                    <a href="#" class="navigation-link">Konri</a>
-                </li>
-                <li class="navigation-item">
-                    <a href="#" class="navigation-link">Rikon</a>
-                </li>
-            </ul>
-
-            <div class="copyright">
-                <p>&copy; 2020 Konrad Marzec</p>
+            <div class="logo">
+                <h4>Slack Tickets</h4>
             </div>
 
-        </div>
+            <div></div>
+            <div></div>
+         </div>
+
+        <form action="" class="navigation-search">
+            <input type="text"
+                   class="navigation-search-input"
+                   placeholder="Search..."
+            >
+            <button class="navigation-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <ul class="nav-links">
+            <li>
+                <a href="#">Home</a>
+            </li>
+            <li>
+                <a href="#">About</a>
+            </li>
+            <li>
+                <a href="#">Work</a>
+            </li>
+            <li>
+                <a href="#">Projects</a>
+            </li>
+        </ul>
     </nav>
-    <!--end of navigation -->
 
-</div>
-<!--end of navbar -->
+    <div class="sidebar">
+        <h3>Workspace</h3>
+    </div>
 
-<script src="{% static 'index.js' %}"></script>
 </body>
 </html>
