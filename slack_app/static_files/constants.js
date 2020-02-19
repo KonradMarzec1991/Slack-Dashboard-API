@@ -1,0 +1,1 @@
+export const SIDEBAR = document.querySelector('.sidebar-content');
