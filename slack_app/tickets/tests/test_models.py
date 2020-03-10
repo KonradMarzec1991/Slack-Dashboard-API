@@ -6,8 +6,7 @@ from tickets.models import (
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('namespaces')
-def test_namespace_model():
+def test_namespace_model(namespaces):
     for namespace in Namespace.objects.all():
         assert str(namespace) == namespace.name
 
@@ -29,3 +28,4 @@ class TestTicketsModel:
         assert workspaces == \
                {'hr': ['payments'], 'finance': ['accountancy', 'controlling'],
                 'logistics': ['consumer_service', 'product_forecasting']}
+

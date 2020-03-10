@@ -12,6 +12,9 @@ from rest_framework.viewsets import ViewSet
 from tickets.models import Ticket, Namespace
 from .actions import Actions
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class SlackInformationViewSet(ViewSet):
 
@@ -85,6 +88,8 @@ def proceed_payload(request):
 
     a = Actions(channel_id)
 
+    response_url = data_dict['response_url']
+
     if data_dict['type'] == 'block_actions':
 
         action_id = data_dict['actions'][0]['action_id']
@@ -138,35 +143,11 @@ def proceed_payload(request):
 
         if data_dict['callback_id'] == 'create_ticket':
 
-            def create_ticket(data_dict, channel_id, team_id):
-                title = data_dict['submission']['title']
-                description = data_dict['submission']['description']
-                status = data_dict['submission']['status']
-                severity = data_dict['submission']['severity']
-
-                workspace = a.get_workspace(team_id)
-                channel = a.get_channel(channel_id)
-
-                ticket_data = {
-                    'namespace': Namespace.objects.get(id=1),  # temporary solution
-                    'title': title,
-                    'description': description,
-                    'status': status,
-                    'severity': severity,
-                    'reporter': reporter,
-                    'data': {
-                        'channel': channel,
-                        'workspace': workspace
-                    }
-                }
-                ticket = Ticket.objects.create(**ticket_data)
-                return ticket
-
-            create_ticket(data_dict, channel_id, team_id)
+            create_ticket.delay(data_dict, reporter, channel_id, team_id, response_url)
 
             a.send_message(
                 channel_id=channel_id,
-                text='Ticket has been created'
+                text='Processing request...'
             )
 
             return HttpResponse(status=200)
@@ -197,14 +178,36 @@ def proceed_payload(request):
 
 
 @shared_task
-def create_ticket(ticket_data, response_url):
+def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
+    a = Actions(channel_id)
+
+    title = data_dict['submission']['title']
+    description = data_dict['submission']['description']
+    status = data_dict['submission']['status']
+    severity = data_dict['submission']['severity']
+
+    workspace = a.get_workspace(team_id)
+    channel = a.get_channel(channel_id)
+
+    ticket_data = {
+        'namespace': Namespace.objects.get(id=1),  # temporary solution
+        'title': title,
+        'description': description,
+        'status': status,
+        'severity': severity,
+        'reporter': reporter,
+        'data': {
+            'channel': channel,
+            'workspace': workspace
+        }
+    }
 
     Ticket.objects.create(**ticket_data)
-    a = Actions()
+
     data = json.dumps({
         'token': a.token,
         'text': 'Ticket has been created'
     })
 
-    response = requests.post(response_url, data=data)
-    return HttpResponse(status=200)
+    requests.post(response_url, data=data)
+    return {'status': 200}
