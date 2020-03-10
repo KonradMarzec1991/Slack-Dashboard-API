@@ -23,6 +23,8 @@ services:
     container_name: rd01
   celery:
     build: .
+    env_file:
+      - ./.env.dev
     container_name: c01
     command: celery worker -A slack_app --loglevel=info
     depends_on:
