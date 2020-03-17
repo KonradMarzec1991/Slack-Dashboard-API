@@ -8,6 +8,31 @@ from slack.actions import Actions
 from tickets.models import Namespace, Ticket
 
 
+class FrozenJSON:
+    """
+    A read-only façade for navigating a JSON-like object
+    using attribute notation
+    """
+
+    def __init__(self, mapping):
+        self.__data = dict(mapping)
+
+    def __getattr__(self, name):
+        if hasattr(self.__data, name):
+            return getattr(self.__data, name)
+        else:
+            return FrozenJSON.build(self.__data[name])
+
+    @classmethod
+    def build(cls, obj):
+        if isinstance(obj, abc.Mapping):
+            return cls(obj)
+        elif isinstance(obj, abc.MutableSequence):
+            return [cls.build(item) for item in obj]
+        else:
+            return obj
+
+
 @shared_task
 def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
     a = Actions(channel_id)

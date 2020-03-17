@@ -76,7 +76,7 @@ class Actions(Templates):
             'blocks': blocks if blocks else None
         }
 
-        response = requests.post(self.URL_SEND_MESSAGE, data=data)
+        requests.post(self.URL_SEND_MESSAGE, data=data)
         return HttpResponse(status=200)
 
     def display_dialog(self, trigger_id, action_type, ticket=None):

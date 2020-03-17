@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from .utils import create_ticket
+from .utils import create_ticket, FrozenJSON
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 import requests
@@ -82,25 +82,27 @@ def proceed_payload(request):
     data = request.POST
     data_dict = json.loads(data['payload'])
 
-    reporter = data_dict['user']['name']  # user name
+    feed = FrozenJSON(data_dict)
 
-    channel_id = data_dict['channel']['id']  # channel JSON
-    team_id = data_dict['team']['id']  # workspace JSON
+    reporter = feed.user.name
+    channel_id = feed.channel.id
+    team_id = feed.team.id
 
-    a = Actions(channel_id)
+    actions = Actions(channel_id)
 
-    response_url = data_dict['response_url']
+    response_url = feed.response_url
 
-    if data_dict['type'] == 'block_actions':
+    if feed.type == 'block_actions':
 
-        action_id = data_dict['actions'][0]['action_id']
+        # action_id = data_dict['actions'][0]['action_id']
+        action_id = feed.actions[0].action_id
         type_action = action_id[0]
         ticket_id = int(action_id[1:])
 
         try:
             ticket = Ticket.objects.get(id=ticket_id)
         except Ticket.DoesNotExist:
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text=f'This ticket has been removed! '
                      f'Please refreash list with `\show_tickets`'
@@ -108,52 +110,58 @@ def proceed_payload(request):
             return HttpResponse(status=200)
 
         if type_action == 'E':
-            a.display_dialog(data_dict['trigger_id'],
+            actions.display_dialog(data_dict['trigger_id'],
                              action_type='edit_ticket',
                              ticket=ticket)
         elif type_action == 'D':
             ticket.delete()
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text=f'`Ticket {ticket_id}` has been removed.'
             )
 
         return HttpResponse(status=200)
 
-    if data_dict['type'] == 'dialog_cancellation':
+    if feed.type == 'dialog_cancellation':
 
         if data_dict['callback_id'] == 'edit_ticket':
 
             ticket_id = data_dict['state']
 
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text=f'*Modification* of `ticket id:{ticket_id}` has been cancelled.'
             )
             return HttpResponse(status=200)
 
-        elif data_dict['callback_id'] == 'create_ticket':
+        elif feed.callback_id == 'create_ticket':
 
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text='*Creation* of `ticket` has been cancelled.'
             )
             return HttpResponse(status=200)
 
-    if data_dict['type'] == 'dialog_submission':
+    if feed.type == 'dialog_submission':
 
-        if data_dict['callback_id'] == 'create_ticket':
+        if feed.callback_id == 'create_ticket':
 
-            create_ticket.delay(data_dict, reporter, channel_id, team_id, response_url)
+            create_ticket.delay(
+                data_dict,
+                reporter,
+                channel_id,
+                team_id,
+                response_url
+            )
 
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text='Processing request...'
             )
 
             return HttpResponse(status=200)
 
-        elif data_dict['callback_id'] == 'edit_ticket':
+        elif feed.callback_id == 'edit_ticket':
 
             ticket_id = int(data_dict['state'])
 
@@ -171,7 +179,7 @@ def proceed_payload(request):
 
             ticket.save()
 
-            a.send_message(
+            actions.send_message(
                 channel_id=channel_id,
                 text=f'`Ticket id:{ticket_id}` has been modified.'
             )
