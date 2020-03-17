@@ -1,3 +1,5 @@
+import os
+
 from django.views.decorators.csrf import csrf_exempt
 
 from .utils import (
@@ -42,7 +44,7 @@ class SlackTicketsListViewSet(ViewSet):
             'channel': feed.channel_id,
             'blocks': json.dumps(blocks)
         }
-        requests.post(actions.URL_SEND_MESSAGE, data=data)
+        requests.post(os.getenv('URL_SEND_MESSAGE'), data=data)
         return Response(status=200)
 
 
