@@ -35,15 +35,13 @@ class FrozenJSON:
 
 @shared_task
 def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
-    a = Actions(channel_id)
+    actions = Actions(channel_id)
+    feed = FrozenJSON(data_dict)
 
-    title = data_dict['submission']['title']
-    description = data_dict['submission']['description']
-    status = data_dict['submission']['status']
-    severity = data_dict['submission']['severity']
+    title, description, status, severity = get_basic_ticket_attr(feed)
 
-    workspace = a.get_workspace(team_id)
-    channel = a.get_channel(channel_id)
+    workspace = actions.get_workspace(team_id)
+    channel = actions.get_channel(channel_id)
 
     ticket_data = {
         'namespace': Namespace.objects.get(id=1),  # temporary solution
@@ -59,7 +57,7 @@ def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
     }
     Ticket.objects.create(**ticket_data)
     data = json.dumps({
-        'token': a.token,
+        'token': actions.token,
         'text': 'Ticket has been created'
     })
 
@@ -67,3 +65,9 @@ def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
     return {'status': 200}
 
 
+def get_basic_ticket_attr(feed, submission=False):
+    if submission:
+        return (feed.submission.title, feed.submission.description,
+                feed.submission.status, feed.submission.severity)
+    else:
+        return feed.title, feed.description, feed.status, feed.severity

@@ -62,7 +62,7 @@ class Actions(Templates):
         response = json.loads(res.content)
         return response['team']['name']
 
-    def send_message(self, channel_id, text=None, blocks=None):
+    def send_message(self, text=None, blocks=None):
         """
         :param channel_id: channel ID from Slack API
         :param text: message text
@@ -71,7 +71,7 @@ class Actions(Templates):
         """
         data = {
             'token': self.token,
-            'channel': channel_id,
+            'channel': self.channel_id,
             'text': text if text else None,
             'blocks': blocks if blocks else None
         }

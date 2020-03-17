@@ -1,12 +1,9 @@
-from celery import shared_task
-
-from .utils import create_ticket, FrozenJSON
+from .utils import create_ticket, get_basic_ticket_attr,  FrozenJSON
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 import requests
 import json
 
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -19,18 +16,10 @@ logger = logging.getLogger(__name__)
 
 class SlackInformationViewSet(ViewSet):
 
-    permission_classes = (AllowAny, )
-
     def create(self, request):
         channel_id = request.POST['channel_id']
         actions = Actions(channel_id)
-
-        actions.send_message(
-            channel_id=channel_id,
-            blocks=json.dumps(
-                actions.slack_information()
-            )
-        )
+        actions.send_message(blocks=json.dumps(actions.slack_information()))
         return Response(status=200)
 
 
@@ -59,10 +48,9 @@ class SlackTicketsListViewSet(ViewSet):
 class SlackDialogViewSet(ViewSet):
 
     def create(self, request):
-        request_data = request.POST
+        feed = FrozenJSON(request.POST)
 
-        channel_id = request_data['channel_id']
-        trigger_id = request_data['trigger_id']
+        channel_id, trigger_id = feed.channel_id, feed.trigger_id
 
         a = Actions(channel_id)
         content = a.display_dialog(
@@ -78,23 +66,16 @@ class SlackDialogViewSet(ViewSet):
 
 @csrf_exempt
 def proceed_payload(request):
-
-    data = request.POST
-    data_dict = json.loads(data['payload'])
-
+    data_dict = json.loads(request.POST['payload'])
     feed = FrozenJSON(data_dict)
 
     reporter = feed.user.name
-    channel_id = feed.channel.id
-    team_id = feed.team.id
+    channel_id, team_id = feed.channel.id, feed.team.id
 
     actions = Actions(channel_id)
-
     response_url = feed.response_url
 
     if feed.type == 'block_actions':
-
-        # action_id = data_dict['actions'][0]['action_id']
         action_id = feed.actions[0].action_id
         type_action = action_id[0]
         ticket_id = int(action_id[1:])
@@ -164,21 +145,12 @@ def proceed_payload(request):
         elif feed.callback_id == 'edit_ticket':
 
             ticket_id = int(data_dict['state'])
-
             ticket = Ticket.objects.get(id=ticket_id)
 
-            title = data_dict['submission']['title']
-            description = data_dict['submission']['description']
-            status = data_dict['submission']['status']
-            severity = data_dict['submission']['severity']
-
-            ticket.title = title
-            ticket.description = description
-            ticket.status = status
-            ticket.severity = severity
+            ticket.title, ticket.description, ticket.status, ticket.severity =\
+                get_basic_ticket_attr(feed, submission=True)
 
             ticket.save()
-
             actions.send_message(
                 channel_id=channel_id,
                 text=f'`Ticket id:{ticket_id}` has been modified.'
