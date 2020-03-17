@@ -8,6 +8,13 @@ from slack.actions import Actions
 from tickets.models import Namespace, Ticket
 
 
+CANCELLED = '*Creation* of `ticket` has been cancelled.'
+PROCESS = 'Processing request...'
+ALREADY_REMOVED = f"""This ticket has been removed! '
+                  f'Please refreash list with `\show_tickets`"""
+GONE_WRONG = 'Something went wrong, please try again...'
+
+
 class FrozenJSON:
     """
     A read-only façade for navigating a JSON-like object
@@ -38,13 +45,14 @@ def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
     actions = Actions(channel_id)
     feed = FrozenJSON(data_dict)
 
-    title, description, status, severity = get_basic_ticket_attr(feed)
+    title, description, status, severity = \
+        get_basic_ticket_attr(feed, submission=True)
 
     workspace = actions.get_workspace(team_id)
     channel = actions.get_channel(channel_id)
 
     ticket_data = {
-        'namespace': Namespace.objects.get(id=1),  # temporary solution
+        'namespace': Namespace.objects.get(id=1),
         'title': title,
         'description': description,
         'status': status,
