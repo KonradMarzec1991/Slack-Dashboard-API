@@ -7,8 +7,7 @@ class Templates:
 
     @staticmethod
     def slack_information():
-        return \
-            [
+        return [
                 {
                     "type": "section",
                     "text": {
@@ -49,19 +48,14 @@ class Templates:
 
     @staticmethod
     def tickets_main_section(text):
-        return \
-            {
+        return {
                 "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": text
-                }
+                "text": {"type": "mrkdwn", "text": text }
             }
 
     @staticmethod
     def ticket_section(ticket):
-        return \
-            {
+        return {
                 "type": "section",
                 "fields": [
                     {
@@ -89,8 +83,7 @@ class Templates:
 
     @staticmethod
     def ticket_buttons(ticket_id):
-        return \
-            {
+        return {
                 "type": "actions",
                 "elements": [
                     {

@@ -3,9 +3,9 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     SlackDialogViewSet,
-    proceed_payload,
     SlackTicketsListViewSet,
     SlackInformationViewSet,
+    slack_payload
 )
 
 slack_router = DefaultRouter()
@@ -17,6 +17,11 @@ slack_router.register('display_dialog', SlackDialogViewSet,
                       basename='display_dialog')
 
 urlpatterns = [
-    path('', include(slack_router.urls), name='slack_information'),
-    path('proceed_payload/', proceed_payload, name='proceed_payload'),
+    path('',
+         include(slack_router.urls),
+         name='slack_information'),
+
+    path('proceed_payload/',
+         slack_payload,
+         name='proceed_payload'),
 ]
