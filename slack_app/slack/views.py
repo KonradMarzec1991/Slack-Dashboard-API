@@ -1,6 +1,10 @@
 import os
-
+import json
 from django.views.decorators.csrf import csrf_exempt
+from django.http.response import HttpResponse
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+import requests
 
 from .utils import (
     create_ticket,
@@ -12,11 +16,6 @@ from .utils import (
     GONE_WRONG
 )
 
-from django.http.response import HttpResponse
-import requests
-import json
-from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from .constants import Constants
 from tickets.models import Ticket
 from .actions import Actions
@@ -24,6 +23,7 @@ from .actions import Actions
 
 class SlackInformationViewSet(ViewSet):
 
+    # pylint: no-self-use
     def create(self, request):
         channel_id = request.POST['channel_id']
         actions = Actions(channel_id)
@@ -33,6 +33,7 @@ class SlackInformationViewSet(ViewSet):
 
 class SlackTicketsListViewSet(ViewSet):
 
+    # pylint: no-self-use
     def create(self, request):
         feed = FrozenJSON(request.POST)
         user_tickets = Ticket.objects.filter(reporter=feed.user_name[0])
@@ -50,6 +51,7 @@ class SlackTicketsListViewSet(ViewSet):
 
 class SlackDialogViewSet(ViewSet):
 
+    # pylint: no-self-use
     def create(self, request):
         feed = FrozenJSON(request.POST)
         channel_id, trigger_id = feed.channel_id, feed.trigger_id

@@ -77,5 +77,4 @@ def get_basic_ticket_attr(feed, submission=False):
     if submission:
         return (feed.submission.title, feed.submission.description,
                 feed.submission.status, feed.submission.severity)
-    else:
-        return feed.title, feed.description, feed.status, feed.severity
+    return feed.title, feed.description, feed.status, feed.severity
