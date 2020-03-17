@@ -3,6 +3,7 @@ Slack actions for interactions with db/server
 Overrides methods of provider to simplify using them
 """
 
+import os
 import json
 
 import requests
@@ -13,13 +14,8 @@ from .templates import Templates
 
 class Actions(Templates):
 
-    URL_CHANNEL_NAME = 'https://slack.com/api/conversations.info'
-    URL_WORKSPACE_NAME = 'https://slack.com/api/team.info'
-    URL_SEND_MESSAGE = 'https://slack.com/api/chat.postMessage'
-    URL_DIALOG_OPEN = 'https://slack.com/api/dialog.open'
-
     def __init__(self, channel_id):
-        self.token = ''
+        self.token = os.getenv('SLACK_TOKEN')
         self.channel_id = channel_id
 
     def show_tickets(self, tickets):
@@ -45,7 +41,7 @@ class Actions(Templates):
             'token': self.token,
             'channel': channel_id
         }
-        res = requests.post(self.URL_CHANNEL_NAME, data=data)
+        res = requests.post(os.getenv('URL_CHANNEL_NAME'), data=data)
         response = json.loads(res.content)
         return response['channel']['name']
 
@@ -58,7 +54,7 @@ class Actions(Templates):
             'token': self.token,
             'team': team_id
         }
-        res = requests.post(self.URL_WORKSPACE_NAME, data=data)
+        res = requests.post(os.getenv('URL_WORKSPACE_NAME'), data=data)
         response = json.loads(res.content)
         return response['team']['name']
 
@@ -76,7 +72,7 @@ class Actions(Templates):
             'blocks': blocks if blocks else None
         }
 
-        requests.post(self.URL_SEND_MESSAGE, data=data)
+        requests.post(os.getenv('URL_SEND_MESSAGE'), data=data)
         return HttpResponse(status=200)
 
     def display_dialog(self, trigger_id, action_type, ticket=None):
@@ -150,46 +146,5 @@ class Actions(Templates):
             'trigger_id': trigger_id,
             'dialog': json.dumps(dialog)
         }
-        response = requests.post(self.URL_DIALOG_OPEN, data=data)
-        return json.loads(response.content)
-
-    def display_dialog_delete(self, trigger_id, action_type, ticket=None):
-        view = {
-            "type": "modal",
-            "callback_id": action_type,
-            "private_metadata": str(ticket.id),
-            "title": {
-                "type": "plain_text",
-                "text": "Ticket removal",
-                "emoji": True
-            },
-            "submit": {
-                "type": "plain_text",
-                "text": "Yes!",
-                "emoji": True
-            },
-            "close": {
-                "type": "plain_text",
-                "text": "No",
-                "emoji": True
-            },
-            "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "plain_text",
-                        "text": f"Are you sure you want to delete "
-                                f"ticket {ticket.id}?",
-                        "emoji": True
-                    }
-                }
-            ]
-        }
-
-        data = {
-            'token': self.token,
-            'trigger_id': trigger_id,
-            'view': json.dumps(view)
-        }
-        response = requests.post('https://slack.com/api/views.open', data=data)
+        response = requests.post(os.getenv('URL_DIALOG_OPEN'), data=data)
         return json.loads(response.content)
