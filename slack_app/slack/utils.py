@@ -42,6 +42,9 @@ class FrozenJSON:
 
 @shared_task
 def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
+    """
+    :return: ticket of user saved in db
+    """
     actions = Actions(channel_id)
     feed = FrozenJSON(data_dict)
 
@@ -74,6 +77,11 @@ def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
 
 
 def get_basic_ticket_attr(feed, submission=False):
+    """
+    :param feed: Slack dictionary response
+    :param submission: True if user wants to create tickets, else False
+    :return: tuple with basic ticket information
+    """
     if submission:
         return (feed.submission.title, feed.submission.description,
                 feed.submission.status, feed.submission.severity)

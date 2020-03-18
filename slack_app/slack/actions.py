@@ -1,6 +1,5 @@
 """
 Slack actions for interactions with db/server
-Overrides methods of provider to simplify using them
 """
 
 import os
@@ -13,6 +12,14 @@ from .templates import Templates
 
 
 class Actions(Templates):
+    """
+    Class `Actions` delivers basic methods to communicate with Slack API.
+    Delivers method for
+    A) showing tickets
+    B) getting channel / workspace name
+    C) Sending messages via Slack
+    D) Opening Slack modal window
+    """
 
     def __init__(self, channel_id):
         self.token = os.getenv('SLACK_TOKEN')
@@ -76,6 +83,12 @@ class Actions(Templates):
         return HttpResponse(status=200)
 
     def display_dialog(self, trigger_id, action_type, ticket=None):
+        """
+        :param trigger_id: Slack trigged id response
+        :param action_type: user's action - EDIT or DELETE
+        :param ticket: user's ticket
+        :return: Slack modal window
+        """
         dialog = {
             "callback_id": action_type,
             "title": "Create ticket",

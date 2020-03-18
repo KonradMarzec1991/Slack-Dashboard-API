@@ -1,3 +1,7 @@
+"""
+Slack API viewsets
+"""
+
 import os
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -22,7 +26,9 @@ from .actions import Actions
 
 
 class SlackInformationViewSet(ViewSet):
-
+    """
+    Viewset returns general information about commands as Slack respond
+    """
     # pylint: no-self-use
     def create(self, request):
         channel_id = request.POST['channel_id']
@@ -32,7 +38,9 @@ class SlackInformationViewSet(ViewSet):
 
 
 class SlackTicketsListViewSet(ViewSet):
-
+    """
+    Viewset returns Slack respond as formatted text message with  user's tickets
+    """
     # pylint: no-self-use
     def create(self, request):
         feed = FrozenJSON(request.POST)
@@ -50,7 +58,9 @@ class SlackTicketsListViewSet(ViewSet):
 
 
 class SlackDialogViewSet(ViewSet):
-
+    """
+    Viewset opens in Slack modal window
+    """
     # pylint: no-self-use
     def create(self, request):
         feed = FrozenJSON(request.POST)
@@ -68,6 +78,16 @@ class SlackDialogViewSet(ViewSet):
 
 @csrf_exempt
 def slack_payload(request):
+    """
+    :param request: Slack request
+    :return: depending on action of user function returns:
+    A) New ticket, when user activated via `SlackDialogViewSet` modal window
+       and submitted validated data in form
+    B) Edited ticket, when user activated via `SlackTicketsListViewSet` message
+       with list of tickets and clicked on one of *edit button*
+    C) Deletes ticket, when user activated via `SlackTicketsListViewSet` message
+       with list of tickets and clicked on one of *delete button*
+    """
     data_dict = json.loads(request.POST['payload'])
     feed = FrozenJSON(data_dict)
     reporter, response_url = feed.user.name, feed.response_url
