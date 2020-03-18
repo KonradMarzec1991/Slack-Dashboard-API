@@ -7,11 +7,9 @@ from celery import shared_task
 from slack.actions import Actions
 from tickets.models import Namespace, Ticket
 
-
 CANCELLED = '*Creation* of `ticket` has been cancelled.'
 PROCESS = 'Processing request...'
-ALREADY_REMOVED = f"""This ticket has been removed! '
-                  f'Please refreash list with `\show_tickets`"""
+ALREADY_REMOVED = f'This ticket has been removed! Please refreash list with `"\"show_tickets`'
 GONE_WRONG = 'Something went wrong, please try again...'
 
 
@@ -36,7 +34,6 @@ class FrozenJSON:
         # pylint: disable=no-else-return
         if isinstance(obj, abc.Mapping):
             return cls(obj)
-        # pylint: disable=no-else-return
         elif isinstance(obj, abc.MutableSequence):
             return [cls.build(item) for item in obj]
         else:
@@ -58,7 +55,7 @@ def create_ticket(data_dict, reporter, channel_id, team_id, response_url):
     channel = actions.get_channel(channel_id)
 
     ticket_data = {
-        'namespace': Namespace.objects.get(id=1),
+        'namespace': Namespace.objects.get(id=1),  # pylint: disable=no-member
         'title': title,
         'description': description,
         'status': status,

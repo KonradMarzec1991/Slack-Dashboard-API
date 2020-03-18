@@ -83,7 +83,7 @@ class SlackDialogViewSet(ViewSet):
 
 
 @csrf_exempt
-def slack_payload(request):
+def slack_payload(request):  # pylint: disable=inconsistent-return-statements
     # pylint: disable=no-self-use
     """
     :param request: Slack request
@@ -106,7 +106,7 @@ def slack_payload(request):
         type_action, ticket_id = action_id[0], int(action_id[1:])
         try:
             ticket = Ticket.objects.get(id=ticket_id)
-        except Ticket.DoesNotExist:
+        except Ticket.DoesNotExist:  # pylint: disable=no-member
             actions.send_message(text=ALREADY_REMOVED)
             return HttpResponse(status=200)
 
