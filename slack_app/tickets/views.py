@@ -87,6 +87,9 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 
 class NamespaceViewSet(viewsets.ModelViewSet):
+    """
+    Basic viewset for class `Namespace`, looks up for namespace id
+    """
     # pylint: disable=too-many-ancestors
     serializer_class = NamespaceSerializer
     queryset = Namespace.objects.all()

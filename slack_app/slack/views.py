@@ -119,7 +119,9 @@ def slack_payload(request):
         return HttpResponse(status=200)
 
     if feed.type == Constants.DIALOG_CANCELLATION:
+        # pylint: disable=no-else-return
         if feed.callback_id == Constants.EDIT_TICKET:
+
             ticket_id = feed.state
             actions.send_message(
                 text=f'*Modification* of `ticket id:{ticket_id}` '
@@ -131,6 +133,7 @@ def slack_payload(request):
             return HttpResponse(status=200)
 
     if feed.type == Constants.DIALOG_SUBMISSION:
+        # pylint: disable=no-else-return
         if feed.callback_id == Constants.CREATE_TICKET:
             create_ticket.delay(
                 data_dict, reporter, channel_id, team_id, response_url
@@ -146,6 +149,3 @@ def slack_payload(request):
             actions.send_message(
                 text=f'`Ticket id:{int(feed.state)}` has been modified.')
             return HttpResponse(status=200)
-
-
-

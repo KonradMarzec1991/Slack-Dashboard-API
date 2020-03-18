@@ -25,6 +25,7 @@ class FrozenJSON:
         self.__data = dict(mapping)
 
     def __getattr__(self, name):
+        # pylint: disable=no-else-return
         if hasattr(self.__data, name):
             return getattr(self.__data, name)
         else:
@@ -32,8 +33,10 @@ class FrozenJSON:
 
     @classmethod
     def build(cls, obj):
+        # pylint: disable=no-else-return
         if isinstance(obj, abc.Mapping):
             return cls(obj)
+        # pylint: disable=no-else-return
         elif isinstance(obj, abc.MutableSequence):
             return [cls.build(item) for item in obj]
         else:
