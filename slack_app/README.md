@@ -3,18 +3,22 @@
 This is an example application that uses Django for communication with Slack API.
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+Below terminal commands allow run app in development mode
 
 ```
-Give the example
-```
-
-And repeat
+git clone https://github.com/KonradMarzec1991/slack_app.git
 
 ```
-until finished
-```
+### Slack Access
+In order to fully use application, install Slack app - how to do this https://api.slack.com/start
 
-End with an example of getting some data out of the system or using it for a little demo
+### Exposing localhost server
+To enable Slack communication with server, expose localhost server.
+One of options how to do this - https://ngrok.com/
+
+
+
+### Features
+
+Slack integration API enables CRUD operations on tickets.
+Django API additionally devliers pagination and filtering options.
